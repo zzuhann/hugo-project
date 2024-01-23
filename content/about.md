@@ -2,6 +2,17 @@
 title: "關於我/About"
 ---
 
-# About Us
+### 從這裡開始
 
-This is the content of the about page.
+哈囉～ 我是 han 🐈‍⬛
+
+目前是擁有一年半經驗的前端工程師，主要使用 React, TypeScript 進行開發，喜歡一步一步透過討論、思考，打造出產品的感覺 ✨。
+
+在那之前是政大的學生，活躍於新創社團、創業競賽、也曾經在新創公司實習過，是我大學生涯中最好的記憶。
+
+過去曾把自己的經歷打成文章，像是實習、社團的心得：[我的 Medium](https://medium.com/@zzuhanlin)
+未來這裡將會成為我新的小天地，繼續創作更多文章！
+
+如果你在這裡的過程有任何好奇的地方，可以在 [linkedin](https://www.linkedin.com/in/zzuhanlin/) 找到我～！
+
+保持聯絡 🪄
