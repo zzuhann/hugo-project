@@ -54,3 +54,5 @@ weight = 80
 changefreq = "monthly"
 filename = "sitemap.xml"
 priority = 0.5
+
+googleAnalytics = "G-ZRE1K2XSPN"
