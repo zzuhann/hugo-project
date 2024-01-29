@@ -10,7 +10,7 @@
       <div class="main">{{ block "main" . }}{{ end }}</div>
       <div class="side">
         {{ range .Site.Sections }} {{ partial "side-recent.html" . }} {{ end }}
-        {{ partial "side-categories.html" . }} {{ partial "side-tags.html" . }}
+        {{ partial "side-categories.html" . }}
       </div>
     </main>
   </body>
