@@ -23,7 +23,7 @@ style = 'monokailight'
 tabWidth = 4
 
 [params]
-description = "Example site for hugo-theme-flat"
+description = "紀錄 han 的前端/生活/各種筆記與日常～！"
 mainSections = ['posts']
 
 ## uncomment belows and set proper values to enable remark42
