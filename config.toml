@@ -49,3 +49,8 @@ weight = 80
 
 [taxonomies]
   category = "categories"
+
+[sitemap]
+changefreq = "monthly"
+filename = "sitemap.xml"
+priority = 0.5
