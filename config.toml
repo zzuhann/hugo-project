@@ -48,6 +48,4 @@ name = "About"
 weight = 80
 
 [taxonomies]
-  tag = "tags"
-  series = "series"
   category = "categories"

@@ -5,6 +5,7 @@ date: 2024-01-29T16:42:45+08:00
 draft: false
 author: "zzuhann"
 slug: "i18n-google-sheet"
+categories: ["前端"]
 ---
 
 ### 前情提要
