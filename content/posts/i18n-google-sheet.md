@@ -6,6 +6,10 @@ draft: false
 author: "zzuhann"
 slug: "i18n-google-sheet"
 categories: ["前端"]
+keywords:
+- "i18n"
+- "多國語系"
+- "i18n-next"
 ---
 
 ### 前情提要
