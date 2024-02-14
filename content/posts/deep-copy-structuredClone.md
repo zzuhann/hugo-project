@@ -193,7 +193,7 @@ function deepClone(obj, map = new WeakMap()) {
 可以透過信箱(zzuhanlin@gmail.com)或 [linkedin](https://www.linkedin.com/in/zzuhanlin/) 找到我
 
 ### REF 參考文章
-[Deep Cloning Objects in JavaScript, the Modern Way](https://www.builder.io/blog/structured-clone#property-descriptors-setters-and-getters)
-[請實踐 JavaScript 淺拷貝 (shallow copy) 和深拷貝 (deep copy)](https://www.explainthis.io/zh-hant/swe/shallow-copy-and-deep-copy)
-[structuredClone() global function](https://developer.mozilla.org/en-US/docs/Web/API/structuredClone)
-[How to Fix the "structuredClone is not defined" Error in Node.js](https://www.codingbeautydev.com/blog/javascript-structuredclone-is-not-defined)
+- [Deep Cloning Objects in JavaScript, the Modern Way](https://www.builder.io/blog/structured-clone#property-descriptors-setters-and-getters)
+- [請實踐 JavaScript 淺拷貝 (shallow copy) 和深拷貝 (deep copy)](https://www.explainthis.io/zh-hant/swe/shallow-copy-and-deep-copy)
+- [structuredClone() global function](https://developer.mozilla.org/en-US/docs/Web/API/structuredClone)
+- [How to Fix the "structuredClone is not defined" Error in Node.js](https://www.codingbeautydev.com/blog/javascript-structuredclone-is-not-defined)
