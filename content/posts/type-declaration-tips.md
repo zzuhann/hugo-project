@@ -100,11 +100,12 @@ export function getDeposit(name: Name) {
 編輯器會透過提示工具把 JSDoc/TSDoc 的註釋顯示出來，行內註釋則不會。
 
 ![jsdoc](/gif/jsdoc.gif)
+
 ![jsdoc-import](/gif/jsdoc-import.gif)
 使用 JSDoc 時，import 也能看到 JSDoc 對該 function 的註釋。
 
 在定義型態時使用 TSDoc
-![tsdoc](/gif/new-tsdoc.gif)
+![tsdoc](/gif/tsdoc-new.gif)
 
 #### 優先使用條件型態，而不是多載的型態宣告
 
