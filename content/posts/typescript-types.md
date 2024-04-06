@@ -94,7 +94,7 @@ const person: foo.Person = {
 
 1. 可能無法透過 declare module 的方式進行擴增
 2. 可能發布的時候沒問題，但新版的 TypeScript 有問題 -> 可能為了這個原因，只能使用舊版 ts
-3. 如果綑綁的型態依賴另一個套件的型態宣告（通常依賴的 `@types` 在它的 devDependencies 內），安裝這個套件 `npm install A` 時，A 套件依賴的 devDependencies 不會被下載，只會下載 A 套件的 dependencies（[什么包放在 devDependencies？什么包放在 dependencies？](https://juejin.cn/post/7077520444332441630)），但如果將依賴的型態宣告安裝在 dependency 內，JavaScript 用戶也會安裝到，但 JavaScript 使用者其實是不需要 `@types` 套件的（畢竟他們沒有用 TypeScript）
+3. 如果綑綁的型態依賴另一個套件的型態宣告（通常依賴的 `@types` 在它的 devDependencies 內），安裝這個套件 `npm install A` 時，A 套件依賴的 devDependencies 不會被下載，只會下載 A 套件的 dependencies {{< a href="https://juejin.cn/post/7077520444332441630" target="_blank" >}}（什么包放在 devDependencies？什么包放在 dependencies？）{{< /a >}}，但如果將依賴的型態宣告安裝在 dependency 內，JavaScript 用戶也會安裝到，但 JavaScript 使用者其實是不需要 `@types` 套件的（畢竟他們沒有用 TypeScript）
 
 作者建議除非程式庫是用 TypeScript 寫的，否則不要綑綁型態宣告。
 
@@ -102,7 +102,7 @@ const person: foo.Person = {
 
 `@types` 是套件的開發者在維護的嗎？
 `@types` 來自於 DefinitelyTyped：是由社群維護的 JavaScript 套件的型態定義集。
-（[DefinitelyTyped Github](https://github.com/DefinitelyTyped/DefinitelyTyped) ReadMe 裡面有詳細的說明）
+{{< a href="https://github.com/DefinitelyTyped/DefinitelyTyped" target="_blank" >}}DefinitelyTyped Github{{< /a >}}
 
 如果套件本身沒有 TypeScript 的型態宣告，通常比較熱門的套件都可以在 DefinitelyTyped 找到型態，例如使用 `lodash` 套件，可以安裝 `@types/lodash`。
 
@@ -118,6 +118,6 @@ npm install --save-dev @types/lodash
 
 ### REF 參考
 
-- [Effective TypeScript 中文版](https://www.books.com.tw/products/0010858053)
-- [什么包放在 devDependencies？什么包放在 dependencies？](https://juejin.cn/post/7077520444332441630)
-- [DefinitelyTyped Github](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- {{< a href="https://www.books.com.tw/products/0010858053" target="_blank" >}}Effective TypeScript 中文版{{< /a >}}
+- {{< a href="https://juejin.cn/post/7077520444332441630" target="_blank" >}}什么包放在 devDependencies？什么包放在 dependencies？{{< /a >}}
+- {{< a href="https://github.com/DefinitelyTyped/DefinitelyTyped" target="_blank" >}}DefinitelyTyped Github{{< /a >}}
