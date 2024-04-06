@@ -99,12 +99,12 @@ export function getDeposit(name: Name) {
 你經常寫的是行內註釋 `//` 還是 JSDoc/TSDoc 風格的註釋 `/** */` 呢？
 編輯器會透過提示工具把 JSDoc/TSDoc 的註釋顯示出來，行內註釋則不會。
 
-![jsdoc](/static/gif/jsdoc.gif)
-![jsdoc-import](/static/gif/jsdoc-import.gif)
+![jsdoc](/gif/jsdoc.gif)
+![jsdoc-import](/gif/jsdoc-import.gif)
 使用 JSDoc 時，import 也能看到 JSDoc 對該 function 的註釋。
 
 在定義型態時使用 TSDoc
-![tsdoc](/static/gif/tsdoc.gif)
+![tsdoc](/gif/tsdoc.gif)
 
 #### 優先使用條件型態，而不是多載的型態宣告
 
