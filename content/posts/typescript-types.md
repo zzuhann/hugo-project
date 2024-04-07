@@ -5,7 +5,7 @@ date: 2024-04-06T14:05:08+08:00
 draft: false
 author: "zzuhann"
 slug: "typescript-types"
-categories: ["前端"]
+categories: ["TypeScript"]
 keywords:
   - "TypeScript"
   - "types"
