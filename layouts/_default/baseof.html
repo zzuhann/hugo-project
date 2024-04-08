@@ -2,8 +2,14 @@
 <html>
   <head>
     <meta content="{{ delimit .Keywords ", " }}" name="keywords">
-    <meta content="{{ $isHomePage := eq .Title .Site.Title }}{{ .Title }}{{ if eq $isHomePage false }} - {{ .Site.Title }}{{ end }}" property="og:title">
-    <meta content="{{ $isHomePage := eq .Title .Site.Title }}{{ .Site.Params.description }}{{ if eq $isHomePage false }} - {{ .Description }}{{ end }}" property="og:description">
+    <meta
+      content="{{ $isHomePage := eq .Title .Site.Title }}{{ .Title }}{{ if eq $isHomePage false }} - {{ .Site.Title }}{{ end }}"
+      property="og:title"
+    />
+    <meta
+      content="{{ $isHomePage := eq .Title .Site.Title }}{{ .Site.Params.description }}{{ if eq $isHomePage false }} - {{ .Description }}{{ end }}"
+      property="og:description"
+    />
     {{ partial "head.html" . }} {{ if not .Site.IsServer }} {{ template
     "_internal/google_analytics_async.html" . }} {{ end }}
   </head>
@@ -14,7 +20,7 @@
       <div class="main">{{ block "main" . }}{{ end }}</div>
       <div class="side">
         {{ range .Site.Sections }} {{ partial "side-recent.html" . }} {{ end }}
-        {{ partial "side-categories.html" . }}
+        {{ partial "side-categories.html" . }} {{ partial "side-tags.html" . }}
       </div>
     </main>
   </body>

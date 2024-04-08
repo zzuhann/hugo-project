@@ -1,11 +1,12 @@
 ---
-title: "Effective TypeScript CH6 - 使用 TypeScript 後要注意的版本管理、介紹 @types"
+title: "Effective TypeScript 系列：使用 TypeScript 後要注意的版本管理、介紹 @types"
 description: "本篇文章提到在 TypeScript 開發中需要注意的地方：包括套件版本控制、綑綁套件、以及介紹 @types。"
 date: 2024-04-06T14:05:08+08:00
 draft: false
 author: "zzuhann"
 slug: "typescript-types"
-categories: ["TypeScript"]
+categories: [TypeScript]
+tags: [Effective TypeScript]
 keywords:
   - "TypeScript"
   - "types"
