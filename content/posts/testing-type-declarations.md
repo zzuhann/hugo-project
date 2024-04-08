@@ -1,11 +1,12 @@
 ---
-title: "Effective TypeScript CH6 - 測試型別宣告"
+title: "(Effective TypeScript 系列) 測試型別宣告"
 description: "探索如何測試 TypeScript 中的型別宣告，這篇文章深入探討了兩種主要策略：程式碼內部和型別檢查器外部的測試方法。從確保 function 正常執行到驗證返回值的型別，這篇文章提供了幾個技巧和工具，幫助你確保 TypeScript 型別的準確性和可靠性。"
 date: 2024-04-07T11:20:02+08:00
 draft: false
 author: "zzuhann"
 slug: "testing-type-declarations"
-categories: ["TypeScript"]
+categories: [TypeScript]
+tags: [Effective TypeScript]
 keywords:
   - "測試型態宣告"
   - "TypeScript"

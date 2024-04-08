@@ -49,6 +49,7 @@ weight = 80
 
 [taxonomies]
   category = "categories"
+  tag = "tags"
 
 [sitemap]
 changefreq = "monthly"

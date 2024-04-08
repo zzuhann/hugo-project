@@ -5,7 +5,8 @@ date: 2024-04-06T20:31:14+08:00
 draft: false
 author: "zzuhann"
 slug: "type-declaration-tips"
-categories: ["TypeScript"]
+categories: [TypeScript]
+tags: [Effective TypeScript]
 keywords:
   - "TypeScript"
   - "type declaration"

@@ -5,7 +5,8 @@ date: 2024-04-07T22:49:37+08:00
 draft: false
 author: "zzuhann"
 slug: "this-in-typescript"
-categories: ["TypeScript"]
+categories: [TypeScript]
+tags: [Effective TypeScript]
 keywords:
   - "this"
   - "TypeScript"

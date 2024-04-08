@@ -5,7 +5,8 @@ date: 2024-04-06T14:05:08+08:00
 draft: false
 author: "zzuhann"
 slug: "typescript-types"
-categories: ["TypeScript"]
+categories: [TypeScript]
+tags: [Effective TypeScript]
 keywords:
   - "TypeScript"
   - "types"
