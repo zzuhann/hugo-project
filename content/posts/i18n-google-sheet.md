@@ -2,7 +2,7 @@
 title: "實作 react-i18next：使用 i18-ally、google sheet 維護多國語系"
 description: "公司導入了多國語系 i18n-next 後，遇到的問題是如何更快速的維護需要被翻譯的文字、如何減少人力但能達到相同的效果？這篇文章會分享 i18n-ally 的使用，以及如何在 google sheet 維護多國語系。"
 date: 2024-01-29T16:42:45+08:00
-draft: false
+draft: true
 author: "zzuhann"
 slug: "i18n-google-sheet"
 categories: ["前端"]

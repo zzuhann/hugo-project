@@ -2,7 +2,7 @@
 title: "Effective TypeScript 系列：JavaScript 與 TypeScript 裡面的 this"
 description: "這篇文章提到了在 JavaScript 和 TypeScript 中的 this。從 JavaScript 的角度出發，討論了 this 的概念，再到 TypeScript 的 this，介紹如何為 function 加上 this 參數的型別。"
 date: 2024-04-07T22:49:37+08:00
-draft: false
+draft: true
 author: "zzuhann"
 slug: "this-in-typescript"
 categories: [TypeScript]

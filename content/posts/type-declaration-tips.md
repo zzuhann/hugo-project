@@ -2,7 +2,7 @@
 title: "Effective TypeScript 系列：撰寫 TypeScript 型態宣告時的注意事項"
 description: "這篇文章探討了在撰寫 TypeScript 型態宣告時需要注意的事項，包括優先使用 structural typing、將所有用到的型態都 export、使用 JSDoc 或 TSDoc 格式的註釋來說明函式、類別與型態，以及優先考慮使用條件型態而不是多載的型態宣告。透過這些技巧，可以提高程式碼的可讀性和易用性。"
 date: 2024-04-06T20:31:14+08:00
-draft: false
+draft: true
 author: "zzuhann"
 slug: "type-declaration-tips"
 categories: [TypeScript]

@@ -2,7 +2,7 @@
 title: "使用 structuredClone() 來進行深拷貝"
 description: "在工作中，深拷貝是一項常見的任務，以避免對原始物件的影響。傳統的方法是使用JSON.parse(JSON.stringify(x))，但它有一些限制。最近發現了structuredClone函數，它可以彌補這些缺點，並且不需要額外的套件。這篇筆記介紹了深淺拷貝的常見方法，評估了structuredClone的優缺點，並提供了手寫深拷貝的方法。"
 date: 2024-02-14T14:29:05+08:00
-draft: false
+draft: true
 author: "zzuhann"
 slug: "deep-copy-structuredClone"
 categories: ["前端"]
