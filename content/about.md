@@ -12,7 +12,7 @@ title: "關於我/About"
 
 過去曾把自己的經歷打成文章，像是實習、社團的心得：[我的 Medium](https://medium.com/@zzuhanlin)
 
-未來這裡將會成為我新的小天地，繼續創作更多文章！
+未來這裡將會成為我新的小天地，繼續創作更多文章！內容包含但不限於：技術/讀書筆記/心情/散文
 
 如果你在這裡的過程有任何好奇的地方，可以在 [linkedin](https://www.linkedin.com/in/zzuhanlin/) 找到我～！
 
