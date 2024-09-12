@@ -50,6 +50,7 @@ weight = 80
 [taxonomies]
   category = "categories"
   tag = "tags"
+  
 
 [sitemap]
 changefreq = "monthly"
@@ -57,3 +58,5 @@ filename = "sitemap.xml"
 priority = 0.5
 
 googleAnalytics = "G-ZRE1K2XSPN"
+
+disqusShortname = "zzuhann"
