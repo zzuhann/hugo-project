@@ -7,7 +7,7 @@ paginate = 4
 baseURL = "https://zzuhann.work/"
 post = "/:slug/"
 
-disqusShortname = "zzuhann"
+disqusShortname = "https-www-zzuhann-work"
 
 # these values are hugo built in markup config
 [markup.highlight]
