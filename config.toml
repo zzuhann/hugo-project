@@ -7,6 +7,8 @@ paginate = 4
 baseURL = "https://zzuhann.work/"
 post = "/:slug/"
 
+disqusShortname = "zzuhann"
+
 # these values are hugo built in markup config
 [markup.highlight]
 anchorLineNos = false
@@ -59,4 +61,3 @@ priority = 0.5
 
 googleAnalytics = "G-ZRE1K2XSPN"
 
-disqusShortname = "zzuhann"
