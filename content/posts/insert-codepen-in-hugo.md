@@ -5,7 +5,7 @@ date: 2024-09-20T01:11:31+08:00
 draft: false
 author: "zzuhann"
 slug: "insert-codepen-in-hugo"
-categories: [Hugo]
+categories: [技術]
 tags: [Hugo]
 keywords:
     - "Hugo"

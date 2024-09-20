@@ -6,7 +6,7 @@ draft: false
 author: "zzuhann"
 slug: "add-disqus-in-hugo"
 categories: [技術]
-tags: [tech]
+tags: [Hugo]
 keywords:
     - "hugo 留言"
     - "disqus hugo"
@@ -84,7 +84,7 @@ disqusShortname: <你的 Shortname>
     if (window.location.hostname == "localhost") return;
 
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = '{{ .Site.DisqusShortname }}';
+    var disqus_shortname = '{{ .Site.Config.Services.Disqus.Shortname }}';
     dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 })();
