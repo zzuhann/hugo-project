@@ -10,7 +10,7 @@
       content="{{ $isHomePage := eq .Title .Site.Title }}{{ .Site.Params.description }}{{ if eq $isHomePage false }} - {{ .Description }}{{ end }}"
       property="og:description"
     />
-    {{ partial "head.html" . }} {{ if not .Site.IsServer }} {{ template
+    {{ partial "head.html" . }} {{ if not hugo.IsServer }} {{ template
     "_internal/google_analytics_async.html" . }} {{ end }}
   </head>
 
