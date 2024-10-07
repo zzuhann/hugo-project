@@ -5,4 +5,4 @@
 
 # 指定Hugo版本，應與本機安裝的Hugo版本一緻
 [build.environment]
-  HUGO_VERSION = "0.109.0"
+  HUGO_VERSION = "0.134.2"
