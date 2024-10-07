@@ -6,20 +6,11 @@
     <description>Recent content in Categories on Han</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 21 Sep 2024 00:17:02 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>觀看筆記</title>
-      <link>http://localhost:1313/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98/</link>
-      <pubDate>Sat, 21 Sep 2024 00:17:02 +0800</pubDate>
-      
-      <guid>http://localhost:1313/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Mon, 07 Oct 2024 00:20:27 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>技術</title>
       <link>http://localhost:1313/categories/%E6%8A%80%E8%A1%93/</link>
-      <pubDate>Fri, 20 Sep 2024 01:11:31 +0800</pubDate>
+      <pubDate>Mon, 07 Oct 2024 00:20:27 +0800</pubDate>
       
       <guid>http://localhost:1313/categories/%E6%8A%80%E8%A1%93/</guid>
       <description></description>
@@ -28,9 +19,18 @@
     <item>
       <title>讀書日記</title>
       <link>http://localhost:1313/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98/</link>
-      <pubDate>Tue, 10 Sep 2024 23:46:45 +0800</pubDate>
+      <pubDate>Sun, 22 Sep 2024 00:05:20 +0800</pubDate>
       
       <guid>http://localhost:1313/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>觀看筆記</title>
+      <link>http://localhost:1313/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98/</link>
+      <pubDate>Sat, 21 Sep 2024 00:17:02 +0800</pubDate>
+      
+      <guid>http://localhost:1313/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98/</guid>
       <description></description>
     </item>
     

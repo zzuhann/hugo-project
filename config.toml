@@ -3,7 +3,7 @@ theme = "flat"
 themesDir = "themes"
 enableRobotsTXT = true
 hasCJKLanguage = true
-paginate = 4
+pagination.pagerSize = 4
 baseURL = "https://zzuhann.work/"
 post = "/:slug/"
 

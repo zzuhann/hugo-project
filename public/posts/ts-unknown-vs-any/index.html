@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta content="" name="keywords">
+    <meta content="TypeScript, unknown, any, 型別, 型態, 型別安全, 型別檢查, 型別推斷, 型別推論" name="keywords">
     <meta
-      content="Ts Unknown vs Any - Han"
+      content="Effective TypeScript: unknown vs any - Han"
       property="og:title"
     />
     <meta
@@ -16,11 +16,15 @@
 
 
 
-<title>Ts Unknown vs Any | Han</title>
+<title>Effective TypeScript: unknown vs any | Han</title>
 <link rel="canonical" href="http://localhost:1313/posts/ts-unknown-vs-any/">
+<meta name="description" content="在 TypeScript 中使用 unknown 及 any 時，雖然看起來都是因為不知道型別時會使用的型別，兩者之中還是有一些區別。
+之前讀書會的時候有同學分享過一些差異，把筆記整理一下分享出來，之後有更多相關的補充資料也會繼續調整這篇文章。" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Ts Unknown vs Any | Han" />
+<meta property="og:title" content="Effective TypeScript: unknown vs any | Han" />
 <meta property="og:url" content="http://localhost:1313/posts/ts-unknown-vs-any/" />
+<meta property="og:description" content="在 TypeScript 中使用 unknown 及 any 時，雖然看起來都是因為不知道型別時會使用的型別，兩者之中還是有一些區別。
+之前讀書會的時候有同學分享過一些差異，把筆記整理一下分享出來，之後有更多相關的補充資料也會繼續調整這篇文章。" />
 
 
 
@@ -63,30 +67,128 @@
       <div class="main">
 
 <section class="single">
-    <h1 class="title">Ts Unknown vs Any</h1>
+    <h1 class="title">Effective TypeScript: unknown vs any</h1>
 
     
         <div class="tip">
             <time datetime="2024-10-07 00:20:27 &#43;0800 CST">2024/10/07</time>
             <span class="split">·</span>
-            <span> 0 words </span>
+            <span> 740 words </span>
             <span class="split">·</span>
             <span>
-                0 minutes to read
+                2 minutes to read
             </span>
         </div>
     
 
     <div class="taxonomies">
         
+        <div>
+            Categories:
+            
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術</a>
+            
+        </div>
+        
 
+        
+            <div>
+                Tags:
+                
+                    <a href="/tags/typescript">TypeScript</a>
+                
+            </div>
         
     </div>
 
     <hr />
 
     <div class="content">
-        
+        <p>在 TypeScript 中使用 <code>unknown</code> 及 <code>any</code> 時，雖然看起來都是因為不知道型別時會使用的型別，兩者之中還是有一些區別。</p>
+<p>之前讀書會的時候有同學分享過一些差異，把筆記整理一下分享出來，之後有更多相關的補充資料也會繼續調整這篇文章。</p>
+<h3 id="unknown-型態是-any-型態的安全替代品"><code>unknown</code> 型態是 <code>any</code> 型態的安全替代品 <a href="#unknown-%e5%9e%8b%e6%85%8b%e6%98%af-any-%e5%9e%8b%e6%85%8b%e7%9a%84%e5%ae%89%e5%85%a8%e6%9b%bf%e4%bb%a3%e5%93%81" class="anchor">🔗</a></h3><p>在不知道型別時，比起馬上使用 <code>any</code>，可以考慮使用 <code>unknown</code> 來作為替代品，有提到幾個原因</p>
+<ol>
+<li>針對 <code>unknown</code> 型別的變數做任何操作都會產生警告</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">unknownVar</span>: <span class="kt">unknown</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">unknownVar</span><span class="p">.</span><span class="nx">b</span> <span class="c1">// &#39;unknownVar&#39; is of type &#39;unknown&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">unknownVar</span><span class="p">()</span> <span class="c1">// &#39;unknownVar&#39; is of type &#39;unknown&#39;
+</span></span></span></code></pre></div><p>如果你很肯定你當下在使用時，會有 <code>b</code> 這個屬性可以使用、或是肯定 <code>unkownVar</code> 是 function 的話，也許可以在使用時進行一些調整：進行斷言 <code>as</code> 或是透過 type guard 進行更安全的型別檢查</p>
+<ul>
+<li>斷言 <code>as</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">unknownVar</span>: <span class="kt">unknown</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="nx">unknownVar</span> <span class="kr">as</span> <span class="p">{</span> <span class="nx">b</span>: <span class="kt">string</span> <span class="p">}).</span><span class="nx">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="nx">unknownVar</span> <span class="kr">as</span> <span class="nx">VoidFunction</span><span class="p">)();</span>
+</span></span></code></pre></div><p>使用斷言的感覺有點像是在跟 TypeScript 說「我比你更懂！」，所以如果不是超級篤定的話，使用 type guard 後再進行斷言或許也是不錯的方式</p>
+<ul>
+<li>type guard</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">unknownVar</span>: <span class="kt">unknown</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 確認 unknownVar 是物件、不是 null 且有 b 這個屬性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">unknownVar</span> <span class="o">===</span> <span class="s2">&#34;object&#34;</span> <span class="o">&amp;&amp;</span> <span class="nx">unknownVar</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="s2">&#34;b&#34;</span> <span class="k">in</span> <span class="nx">unknownVar</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">((</span><span class="nx">unknownVar</span> <span class="kr">as</span> <span class="p">{</span> <span class="nx">b</span>: <span class="kt">string</span> <span class="p">}).</span><span class="nx">b</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">unknownVar</span> <span class="o">===</span> <span class="s2">&#34;function&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="nx">unknownVar</span> <span class="kr">as</span> <span class="nx">VoidFunction</span><span class="p">)();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ol start="2">
+<li>任何型態都可以指派給 <code>unkown</code>， <code>unknown</code> 不能指派給其他型態</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">unknownVar</span>: <span class="kt">unknown</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 可以指派任何型態給 unknown
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">unknownVar</span> <span class="o">=</span> <span class="s2">&#34;string value&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">unknownVar</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">unknownVar</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">unknownVar</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">key</span><span class="o">:</span> <span class="s2">&#34;value&#34;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nx">unknownVar</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="nx">unknownVar</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Hello&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">stringVar</span>: <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// unknown 不能指派給其他型態
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">stringVar</span> <span class="o">=</span> <span class="nx">unknownVar</span> <span class="c1">// Type &#39;unknown&#39; is not assignable to type &#39;string&#39;.
+</span></span></span></code></pre></div><p>相比 <code>any</code> 呢？</p>
+<ol>
+<li>任何型態都可以指派給 <code>any</code>，<code>any</code> 可以指派給其他型態（除了 <code>never</code>）</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">anyVar</span>: <span class="kt">any</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 任何型態都可以指派給 any
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">anyVar</span> <span class="o">=</span> <span class="s2">&#34;string value&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">anyVar</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">anyVar</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">anyVar</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">key</span><span class="o">:</span> <span class="s2">&#34;value&#34;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nx">anyVar</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="nx">anyVar</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Hello&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// any 可以指派給其他型態
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">let</span> <span class="nx">anyVar</span>: <span class="kt">any</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">stringVar</span>: <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">numberVar</span>: <span class="kt">number</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">booleanVar</span>: <span class="kt">boolean</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">anyVar</span> <span class="o">=</span> <span class="s2">&#34;Hello&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">stringVar</span> <span class="o">=</span> <span class="nx">anyVar</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">numberVar</span> <span class="o">=</span> <span class="nx">anyVar</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">booleanVar</span> <span class="o">=</span> <span class="nx">anyVar</span><span class="p">;</span>
+</span></span></code></pre></div><p>型態是 <code>any</code> ，就等於 typescript 不再對這個變數進行型別檢查，也減少了型別的安全性，且 any 有蔓延性（下次再來寫這個！），一不注意就會讓更多變數也變成 any。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">anyVar</span>: <span class="kt">any</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">neverVar</span>: <span class="kt">never</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// any 不能指派給 never
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">neverVar</span> <span class="o">=</span> <span class="nx">anyVar</span><span class="p">;</span> <span class="c1">// Type &#39;any&#39; is not assignable to type &#39;never&#39;. 
+</span></span></span></code></pre></div><p><code>never</code> 是「永遠不會發生的值」，所以他也不應該等於任何值，<code>any</code> 就也沒有辦法指派給 <code>never</code>。</p>
+<p>Ref: Effective TypeScript 3,4,5 章 讀書會</p>
+
     </div>
 
     
@@ -123,7 +225,7 @@
     <ul>
         
             <li>
-                <a href="/posts/ts-unknown-vs-any/">Ts Unknown vs Any</a>
+                <a href="/posts/ts-unknown-vs-any/">Effective TypeScript: unknown vs any</a>
             </li>
         
             <li>
@@ -160,7 +262,7 @@
             </li>
         
             <li>
-                <a href="/categories/%E6%8A%80%E8%A1%93">技術(6)</a>
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術(7)</a>
             </li>
         
             <li>
@@ -208,7 +310,7 @@
             </li>
         
             <li>
-                <a href="/tags/typescript">typescript (1)</a>
+                <a href="/tags/typescript">typescript (2)</a>
             </li>
         
             <li>

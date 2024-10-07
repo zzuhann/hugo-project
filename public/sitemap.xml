@@ -3,22 +3,77 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2024-09-21T00:17:02+08:00</lastmod>
+    <lastmod>2024-10-07T00:20:27+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/posts/ts-unknown-vs-any/</loc>
+    <lastmod>2024-10-07T00:20:27+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>http://localhost:1313/</loc>
-    <lastmod>2024-09-21T00:17:02+08:00</lastmod>
+    <lastmod>2024-10-07T00:20:27+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2024-09-21T00:17:02+08:00</lastmod>
+    <lastmod>2024-10-07T00:20:27+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>http://localhost:1313/tags/</loc>
-    <lastmod>2024-09-21T00:17:02+08:00</lastmod>
+    <lastmod>2024-10-07T00:20:27+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/tags/typescript/</loc>
+    <lastmod>2024-10-07T00:20:27+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/categories/%E6%8A%80%E8%A1%93/</loc>
+    <lastmod>2024-10-07T00:20:27+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/tags/next.js/</loc>
+    <lastmod>2024-10-05T00:00:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/posts/use-slug-for-dynamic-routes/</loc>
+    <lastmod>2024-10-05T00:00:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/tags/css/</loc>
+    <lastmod>2024-10-02T23:21:56+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/posts/use-flex-to-limit-font-size/</loc>
+    <lastmod>2024-10-02T23:21:56+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/posts/strict-false-ignore-null-ts/</loc>
+    <lastmod>2024-09-25T01:08:16+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/tags/reading-diary/</loc>
+    <lastmod>2024-09-22T00:05:20+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98/</loc>
+    <lastmod>2024-09-22T00:05:20+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>http://localhost:1313/posts/brain-can-not-multiwork/</loc>
+    <lastmod>2024-09-22T00:05:20+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
@@ -47,11 +102,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>http://localhost:1313/categories/%E6%8A%80%E8%A1%93/</loc>
-    <lastmod>2024-09-20T01:11:31+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
     <loc>http://localhost:1313/tags/css-challenge/</loc>
     <lastmod>2024-09-18T23:56:27+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -64,16 +114,6 @@
   </url><url>
     <loc>http://localhost:1313/posts/add-disqus-in-hugo/</loc>
     <lastmod>2024-09-13T01:05:07+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>http://localhost:1313/tags/reading-diary/</loc>
-    <lastmod>2024-09-10T23:46:45+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>http://localhost:1313/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98/</loc>
-    <lastmod>2024-09-10T23:46:45+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
