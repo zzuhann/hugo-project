@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta content="測試型態宣告, TypeScript, Testing Type Declaration" name="keywords">
+    <meta
+      content="Effective TypeScript 系列：測試型別宣告 - Han"
+      property="og:title"
+    />
+    <meta
+      content="紀錄 han 的前端/生活/各種筆記與日常～！ - 探索如何測試 TypeScript 中的型別宣告，這篇文章深入探討了兩種主要策略：程式碼內部和型別檢查器外部的測試方法。從確保 function 正常執行到驗證返回值的型別，這篇文章提供了幾個技巧和工具，幫助你確保 TypeScript 型別的準確性和可靠性。"
+      property="og:description"
+    />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>Effective TypeScript 系列：測試型別宣告 | Han</title>
+<link rel="canonical" href="http://localhost:1313/posts/testing-type-declarations/">
+<meta name="description" content="探索如何測試 TypeScript 中的型別宣告，這篇文章深入探討了兩種主要策略：程式碼內部和型別檢查器外部的測試方法。從確保 function 正常執行到驗證返回值的型別，這篇文章提供了幾個技巧和工具，幫助你確保 TypeScript 型別的準確性和可靠性。" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Effective TypeScript 系列：測試型別宣告 | Han" />
+<meta property="og:url" content="http://localhost:1313/posts/testing-type-declarations/" />
+<meta property="og:description" content="探索如何測試 TypeScript 中的型別宣告，這篇文章深入探討了兩種主要策略：程式碼內部和型別檢查器外部的測試方法。從確保 function 正常執行到驗證返回值的型別，這篇文章提供了幾個技巧和工具，幫助你確保 TypeScript 型別的準確性和可靠性。" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+ 
+  </head>
+
+  <body>
+    <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="http://localhost:1313/">Han</a>
+
+        <nav class="menu">
+            
+                <div class="menu-item">
+                    
+                        <a href="/posts/">Posts</a>
+                    
+                </div>
+            
+                <div class="menu-item">
+                    
+                        <a href="/about/">About</a>
+                    
+                </div>
+            
+        </nav>
+    </div>
+</header>
+
+    <main class="main-wrapper">
+      <div class="main">
+
+<section class="single">
+    <h1 class="title">Effective TypeScript 系列：測試型別宣告</h1>
+
+    
+        <div class="tip">
+            <time datetime="2024-04-07 11:20:02 &#43;0800 CST">2024/04/07</time>
+            <span class="split">·</span>
+            <span> 1579 words </span>
+            <span class="split">·</span>
+            <span>
+                4 minutes to read
+            </span>
+        </div>
+    
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/typescript">TypeScript</a>
+            
+        </div>
+        
+
+        
+            <div>
+                Tags:
+                
+                    <a href="/tags/effective-typescript">Effective TypeScript</a>
+                
+            </div>
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <h3 id="前情提要">前情提要 <a href="#%e5%89%8d%e6%83%85%e6%8f%90%e8%a6%81" class="anchor">🔗</a></h3><p>上一篇<a href="https://www.zzuhann.work/posts/type-declaration-tips/" target="_blank">Effective TypeScript CH6 - 撰寫 TypeScript 型態宣告時的注意事項</a>
+提到的，在撰寫型態宣告時要注意的事項，而這一篇會提到撰寫完之後，要如何測試型態宣告。</p>
+<p>書中提到的方法主要分為兩種：一種在程式碼內測試型態宣告、一種則是在型態檢查器外面。</p>
+<h3 id="這篇文會提到">這篇文會提到 <a href="#%e9%80%99%e7%af%87%e6%96%87%e6%9c%83%e6%8f%90%e5%88%b0" class="anchor">🔗</a></h3><ul>
+<li><a href="#%E5%9C%A8%E7%A8%8B%E5%BC%8F%E7%A2%BC%E5%85%A7%E5%B8%B8%E8%A6%8B%E7%9A%84%E5%81%9A%E6%B3%95">在程式碼內，常見的做法</a>
+<ul>
+<li><a href="#%E7%A2%BA%E4%BF%9D-function-%E5%8F%AF%E4%BB%A5%E6%AD%A3%E5%B8%B8%E5%9F%B7%E8%A1%8C%E4%B8%8D%E6%9C%83%E5%A0%B1%E9%8C%AF">確保 function 可以正常執行，不會報錯</a></li>
+<li><a href="#%E5%B0%87%E7%B5%90%E6%9E%9C%E6%8C%87%E6%B4%BE%E7%B5%A6%E7%89%B9%E5%AE%9A%E5%9E%8B%E6%85%8B%E7%9A%84%E8%AE%8A%E6%95%B8">將結果指派給特定型態的變數</a></li>
+<li><a href="#%E5%AE%9A%E7%BE%A9%E4%B8%80%E5%80%8B%E5%8D%94%E5%8A%A9%E5%87%BD%E5%BC%8F">定義一個協助函式</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9C%A8%E5%9E%8B%E6%85%8B%E6%AA%A2%E6%9F%A5%E5%99%A8%E5%A4%96%E9%9D%A2%E9%80%B2%E8%A1%8C%E6%B8%AC%E8%A9%A6">在型態檢查器外面進行測試</a></li>
+</ul>
+<h3 id="在程式碼內常見的做法">在程式碼內，常見的做法 <a href="#%e5%9c%a8%e7%a8%8b%e5%bc%8f%e7%a2%bc%e5%85%a7%e5%b8%b8%e8%a6%8b%e7%9a%84%e5%81%9a%e6%b3%95" class="anchor">🔗</a></h3><h4 id="確保-function-可以正常執行不會報錯">確保 function 可以正常執行，不會報錯 <a href="#%e7%a2%ba%e4%bf%9d-function-%e5%8f%af%e4%bb%a5%e6%ad%a3%e5%b8%b8%e5%9f%b7%e8%a1%8c%e4%b8%8d%e6%9c%83%e5%a0%b1%e9%8c%af" class="anchor">🔗</a></h4><p>有一個 function</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="nx">map</span><span class="p">([</span><span class="s2">&#34;2017&#34;</span><span class="p">,</span> <span class="s2">&#34;2018&#34;</span><span class="p">,</span> <span class="s2">&#34;2019&#34;</span><span class="p">],</span> <span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">v</span><span class="p">));</span>
+</span></span></code></pre></div><p>透過測試來確保這個 function 可以正常執行</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="c1">// 測試 map 函式是否正確轉換字串陣列為數字陣列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">test</span><span class="p">(</span><span class="s2">&#34;map function converts string array to number array&#34;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">input</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;2017&#34;</span><span class="p">,</span> <span class="s2">&#34;2018&#34;</span><span class="p">,</span> <span class="s2">&#34;2019&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">2018</span><span class="p">,</span> <span class="mi">2019</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">map</span><span class="p">(</span><span class="nx">input</span><span class="p">,</span> <span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">v</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">expect</span><span class="p">(</span><span class="nx">result</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">(</span><span class="nx">expected</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><p>這個方式可以確保這個 function 可以正常執行，不會報錯。問題在於沒有測試到 return 的 type 是否正確，所以接下來的方式會去檢查 return 的 type 是否正確。</p>
+<h4 id="將結果指派給特定型態的變數">將結果指派給特定型態的變數 <a href="#%e5%b0%87%e7%b5%90%e6%9e%9c%e6%8c%87%e6%b4%be%e7%b5%a6%e7%89%b9%e5%ae%9a%e5%9e%8b%e6%85%8b%e7%9a%84%e8%ae%8a%e6%95%b8" class="anchor">🔗</a></h4><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">lengths</span>: <span class="kt">number</span><span class="p">[]</span> <span class="o">=</span> <span class="nx">map</span><span class="p">([</span><span class="s2">&#34;john&#34;</span><span class="p">,</span> <span class="s2">&#34;may&#34;</span><span class="p">],</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">name</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span></span></code></pre></div><p>這個方式確實可以確保 return 的 type 是我們所期望的，但同時也會帶來一個問題：為了賦予結果特定的 type，必須多宣告一個變數，而這個變數除了用來檢查 return 的 type 以外沒有其他用途。</p>
+<p>這樣的情況下，eslint 可能會有未使用變數的 warning 或 error，需要再額外處理。</p>
+<p><img src="/gif/ts-eslint-ignore.gif" alt="ts-eslint-ignore"></p>
+<h4 id="定義一個協助函式">定義一個協助函式 <a href="#%e5%ae%9a%e7%be%a9%e4%b8%80%e5%80%8b%e5%8d%94%e5%8a%a9%e5%87%bd%e5%bc%8f" class="anchor">🔗</a></h4><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">assertType</span><span class="p">&lt;</span><span class="nt">T</span><span class="p">&gt;(</span><span class="nx">x</span>: <span class="kt">T</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">assertType</span><span class="p">&lt;</span><span class="nt">number</span><span class="err">[]</span><span class="p">&gt;(</span><span class="nx">map</span><span class="p">([</span><span class="s2">&#34;john&#34;</span><span class="p">,</span> <span class="s2">&#34;paul&#34;</span><span class="p">],</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">name</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span></span></code></pre></div><p>這個方式的問題在於</p>
+<ol>
+<li>檢查的是兩種型態的可賦值性，而不是相等性</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">n</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span> <span class="c1">// n 的 type 為 12
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">assertType</span><span class="p">&lt;</span><span class="nt">number</span><span class="p">&gt;(</span><span class="nx">n</span><span class="p">);</span> <span class="c1">// OK，因為 12 是 number 的子型態
+</span></span></span></code></pre></div><p>在這個例子中 <code>n</code> 的型別為 12，透過 <code>assertType</code> 預期它的型態為 <code>number</code>，因為 <code>12</code> 為 <code>number</code> 的子型態，所以是會通過型態檢查的，因為 <code>12</code> 也是 <code>number</code> 的一種。</p>
+<ol start="2">
+<li>物件型態檢查為 structural typing，只要有符合我需要的 type 即可，如果有多的 key 不會檢查</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">beatles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;john&#34;</span><span class="p">,</span> <span class="s2">&#34;paul&#34;</span><span class="p">,</span> <span class="s2">&#34;george&#34;</span><span class="p">,</span> <span class="s2">&#34;ringo&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="nx">assertType</span><span class="o">&lt;</span><span class="p">{</span> <span class="nx">name</span>: <span class="kt">string</span> <span class="p">}[]</span><span class="o">&gt;</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">map</span><span class="p">(</span><span class="nx">beatles</span><span class="p">,</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">name</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">inYellowSubmarine</span>: <span class="kt">name</span> <span class="o">===</span> <span class="s2">&#34;ringo&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}))</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span> <span class="c1">// OK
+</span></span></span></code></pre></div><p>在這個例子中預期結果型態為 <code>{name: string}[]</code>，然而實際上 map 出來的結果為 <code>{name: string, inYellowSubmarine: boolean}[]</code>，因為只預期需要 <code>name</code> 這個 key，所以 <code>{name: string, inYellowSubmarine: boolean}[]</code> 他只會去檢查是否有 <code>name</code>、符合 <code>string</code>、且為陣列型態，即使有多的 key 也不會檢查，因為已經符合了我所需要的 type。</p>
+<ol start="3">
+<li>function 參數可以比型態宣告得多</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">add</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span>: <span class="kt">number</span><span class="p">,</span> <span class="nx">b</span>: <span class="kt">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">assertType</span><span class="o">&lt;</span><span class="p">(</span><span class="nx">a</span>: <span class="kt">number</span><span class="p">,</span> <span class="nx">b</span>: <span class="kt">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="kt">number</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">add</span><span class="p">);</span> <span class="c1">// OK
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">double</span><span class="o">:</span> <span class="p">(</span><span class="nx">a</span>: <span class="kt">number</span><span class="p">,</span> <span class="nx">b</span>: <span class="kt">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="kt">number</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span>: <span class="kt">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="nx">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">assertType</span><span class="o">&lt;</span><span class="p">(</span><span class="nx">a</span>: <span class="kt">number</span><span class="p">,</span> <span class="nx">b</span>: <span class="kt">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="kt">number</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">double</span><span class="p">);</span> <span class="c1">// OK
+</span></span></span></code></pre></div><p>這是常見的 JavaScript pattern：function 接受多個參數，在呼叫時要傳入幾個參數（可以是 0 個，當然，不能傳超過指定參數的數量）由呼叫者決定。為了和 JavaScript 中常見的 pattern 保持一致，TypeScript 也會容許這個行為。</p>
+<p>可以參考這篇文章，這是來自 TypeScript 的 FAQ：<a href="https://github.com/Microsoft/TypeScript/wiki/FAQ#why-are-functions-with-fewer-parameters-assignable-to-functions-that-take-more-parameters" target="_blank">Why are functions with fewer parameters assignable to functions that take more parameters?</a>
+</p>
+<p>如果想要確保參數的數量及型別，可以把 function 的參數及 return type 分開來測試。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">double</span> <span class="o">=</span> <span class="p">(</span><span class="nx">x</span>: <span class="kt">number</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="nx">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">p</span>: <span class="kt">Parameters</span><span class="p">&lt;</span><span class="nt">typeof</span> <span class="na">double</span><span class="p">&gt;</span> <span class="o">=</span> <span class="kc">null</span><span class="o">!</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">assertType</span><span class="o">&lt;</span><span class="p">[</span><span class="kt">number</span><span class="p">,</span> <span class="kt">number</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//                           ~ Argument of type &#39;[number]&#39; is not
+</span></span></span><span class="line"><span class="cl"><span class="c1">//                             assignable to parameter of type [number, number]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">let</span> <span class="nx">r</span>: <span class="kt">ReturnType</span><span class="p">&lt;</span><span class="nt">typeof</span> <span class="na">double</span><span class="p">&gt;</span> <span class="o">=</span> <span class="kc">null</span><span class="o">!</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">assertType</span><span class="p">&lt;</span><span class="nt">number</span><span class="p">&gt;(</span><span class="nx">r</span><span class="p">);</span> <span class="c1">// OK
+</span></span></span></code></pre></div><h3 id="在型態檢查器外面進行測試">在型態檢查器外面進行測試 <a href="#%e5%9c%a8%e5%9e%8b%e6%85%8b%e6%aa%a2%e6%9f%a5%e5%99%a8%e5%a4%96%e9%9d%a2%e9%80%b2%e8%a1%8c%e6%b8%ac%e8%a9%a6" class="anchor">🔗</a></h3><p>因為有可能透過一些方式，把 <code>any</code> 指派給整個模組，讓 TypeScript 不再對整個模組進行型態檢查，即使你對各種型態宣告做了嚴格的測試。
+（作者在書中提到 <code>declare module 'overbar'</code>的方式會造成這個結果，但是我試不出來，所以提供給大家可能有這樣的情形 QQ ～～）</p>
+<p>因此作者認為在型態檢查器外面進行檢查是比較好的做法，以 DefinitelyTyped 存放的型態宣告而言(之前提到的 <code>@types</code>)，是透過 <code>dtslint</code> 在型態檢查器外面進行檢查。</p>
+<p>語法來說可能會類似這樣（取自書中程式碼）</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">beatles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;john&#34;</span><span class="p">,</span> <span class="s2">&#34;paul&#34;</span><span class="p">,</span> <span class="s2">&#34;george&#34;</span><span class="p">,</span> <span class="s2">&#34;ringo&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="nx">map</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">beatles</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">function</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">name</span><span class="p">,</span> <span class="c1">// $ExpectType string
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">i</span><span class="p">,</span> <span class="c1">// $ExpectType number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">array</span> <span class="c1">// $ExpectType string[]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">;</span> <span class="c1">// $ExpectType string[]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">name</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span> <span class="c1">// $ExpectType number[]
+</span></span></span></code></pre></div><p>作者有提到，<code>dtslint</code> 不是檢查可賦值性，而是檢查各個代號的型態，也會進行字面比較，符合在編輯器中手動測試型態宣告式的做法：<code>dtslint</code> 是將這個程序自動化。</p>
+<p>不過這一塊我沒有涉獵過，所以先記錄起來～！往後接觸到的話應該會更有心得。</p>
+<h3 id="總結">總結 <a href="#%e7%b8%bd%e7%b5%90" class="anchor">🔗</a></h3><p>這篇提到了如何測試撰寫好的型態宣告
+主要分為在程式碼內測試、以及在型態檢查器外測試</p>
+<ul>
+<li>程式碼內測試，常見的做法
+<ul>
+<li>確保 function 可以正常執行，不會報錯</li>
+<li>將結果指派給特定型態的變數</li>
+<li>定義一個協助函式</li>
+</ul>
+</li>
+<li>在型態檢查器外面進行測試</li>
+</ul>
+<h3 id="ref-參考">REF 參考 <a href="#ref-%e5%8f%83%e8%80%83" class="anchor">🔗</a></h3><ul>
+<li><a href="https://github.com/Microsoft/TypeScript/wiki/FAQ#why-are-functions-with-fewer-parameters-assignable-to-functions-that-take-more-parameters" target="_blank">Why are functions with fewer parameters assignable to functions that take more parameters?</a>
+</li>
+<li><a href="https://www.books.com.tw/products/0010858053" target="_blank">Effective TypeScript 中文版</a>
+</li>
+</ul>
+
+    </div>
+
+    
+
+    <div class="disqus markdown" style="width: 100%;">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'https-www-zzuhann-work';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+</section>
+
+</div>
+      <div class="side">
+         <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/ts-unknown-vs-any/">Ts Unknown vs Any</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-slug-for-dynamic-routes/">使用 Next.js 的 Dynamic Routes 來處理多層結構的頁面</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-flex-to-limit-font-size/">使用 flex box 來防止字體被動態調整？</a>
+            </li>
+        
+            <li>
+                <a href="/posts/strict-false-ignore-null-ts/">tsconfig 設定 strict: false 會忽略 null 的型別判定</a>
+            </li>
+        
+            <li>
+                <a href="/posts/brain-can-not-multiwork/">讀書日記 | 大腦沒辦法多工，即使訓練也一樣！</a>
+            </li>
+        
+    </ul>
+</div>
+ 
+        <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/typescript">typescript(4)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端(2)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術(6)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%9D%82%E6%8A%80%E6%B5%85%E5%B0%9D">杂技浅尝(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98">觀看筆記(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98">讀書日記(2)</a>
+            </li>
+        
+    </ul>
+</div>
+ <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/css">css (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/css-challenge">css challenge (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/effective-typescript">effective typescript (4)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/hugo">hugo (3)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/next.js">next.js (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/reading-diary">reading diary (2)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/typescript">typescript (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/video-diary">video diary (1)</a>
+            </li>
+        
+    </ul>
+</div>
+
+      </div>
+    </main>
+  </body>
+</html>

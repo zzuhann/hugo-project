@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CSS Challenge on Han</title>
+    <link>http://localhost:1313/tags/css-challenge/</link>
+    <description>Recent content in CSS Challenge on Han</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 18 Sep 2024 23:56:27 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/css-challenge/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CSS Challenge Day 6 | 做一個有缺口的圓形</title>
+      <link>http://localhost:1313/posts/creating-circular-shape-with-gap/</link>
+      <pubDate>Wed, 18 Sep 2024 23:56:27 +0800</pubDate>
+      
+      <guid>http://localhost:1313/posts/creating-circular-shape-with-gap/</guid>
+      <description>&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/img/creating-circular-shape-with-gap-1.png&#34; width=&#34;350&#34;&gt;
+&lt;/figure&gt;
+&lt;p&gt;這樣類似圓形的圖形會怎麼做呢？
+最近開始做 css 的 100 天 Challenge，Day 6 有一個這樣的圖形需求，我先是朝了 clip path、svg 等方向來思考、找相關資料，但似乎沒有符合我需求的，於是直接找了網路上做 Day6 的人的分享（&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10290513?sc=rss.qu&#34; target=&#34;_blank&#34;&gt;[Day 7] Profile: 來製作個簡單樸實的個人檔案吧!&lt;/a&gt;
+）&lt;/p&gt;
+&lt;p&gt;發現只要像平常做圓形一樣去做就可以： &lt;code&gt;width&lt;/code&gt; 、 &lt;code&gt;height&lt;/code&gt; 、 &lt;code&gt;border-radius&lt;/code&gt; 以及 &lt;code&gt;border&lt;/code&gt;
+關鍵在於想要製造缺口的那一邊的 border 顏色設為 &lt;code&gt;transparent&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;又是把圖形想得太複雜的一天！&lt;/p&gt;
+&lt;p&gt;今天 CSS Challenge 的成果：
+&lt;p class=&#34;codepen&#34; data-height=&#34;500&#34; data-default-tab=&#34;result&#34; data-slug-hash=&#34;vYqqqqy&#34; data-user=&#34;zzuhann&#34; style=&#34;height: 500px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;&#34;&gt;&lt;/p&gt;
+&lt;script async src=&#34;https://cpwebassets.codepen.io/assets/embed/ei.js&#34;&gt;&lt;/script&gt; &lt;/p&gt;
+&lt;p&gt;（推坑一下 BOYNEXTDOOR）
+（哇光是研究 hugo 要怎麼嵌入 codepen 預覽又另外花了一些時間，明天來分享！）&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

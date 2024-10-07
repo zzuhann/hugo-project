@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta content="deep copy, structuredClone" name="keywords">
+    <meta
+      content="使用 structuredClone() 來進行深拷貝 - Han"
+      property="og:title"
+    />
+    <meta
+      content="紀錄 han 的前端/生活/各種筆記與日常～！ - 在工作中，深拷貝是一項常見的任務，以避免對原始物件的影響。傳統的方法是使用JSON.parse(JSON.stringify(x))，但它有一些限制。最近發現了structuredClone函數，它可以彌補這些缺點，並且不需要額外的套件。這篇筆記介紹了深淺拷貝的常見方法，評估了structuredClone的優缺點，並提供了手寫深拷貝的方法。"
+      property="og:description"
+    />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>使用 structuredClone() 來進行深拷貝 | Han</title>
+<link rel="canonical" href="http://localhost:1313/posts/deep-copy-structuredclone/">
+<meta name="description" content="在工作中，深拷貝是一項常見的任務，以避免對原始物件的影響。傳統的方法是使用JSON.parse(JSON.stringify(x))，但它有一些限制。最近發現了structuredClone函數，它可以彌補這些缺點，並且不需要額外的套件。這篇筆記介紹了深淺拷貝的常見方法，評估了structuredClone的優缺點，並提供了手寫深拷貝的方法。" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="使用 structuredClone() 來進行深拷貝 | Han" />
+<meta property="og:url" content="http://localhost:1313/posts/deep-copy-structuredclone/" />
+<meta property="og:description" content="在工作中，深拷貝是一項常見的任務，以避免對原始物件的影響。傳統的方法是使用JSON.parse(JSON.stringify(x))，但它有一些限制。最近發現了structuredClone函數，它可以彌補這些缺點，並且不需要額外的套件。這篇筆記介紹了深淺拷貝的常見方法，評估了structuredClone的優缺點，並提供了手寫深拷貝的方法。" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+ 
+  </head>
+
+  <body>
+    <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="http://localhost:1313/">Han</a>
+
+        <nav class="menu">
+            
+                <div class="menu-item">
+                    
+                        <a href="/posts/">Posts</a>
+                    
+                </div>
+            
+                <div class="menu-item">
+                    
+                        <a href="/about/">About</a>
+                    
+                </div>
+            
+        </nav>
+    </div>
+</header>
+
+    <main class="main-wrapper">
+      <div class="main">
+
+<section class="single">
+    <h1 class="title">使用 structuredClone() 來進行深拷貝</h1>
+
+    
+        <div class="tip">
+            <time datetime="2024-02-14 14:29:05 &#43;0800 CST">2024/02/14</time>
+            <span class="split">·</span>
+            <span> 1825 words </span>
+            <span class="split">·</span>
+            <span>
+                4 minutes to read
+            </span>
+        </div>
+    
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端</a>
+            
+        </div>
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <h3 id="動機">動機 <a href="#%e5%8b%95%e6%a9%9f" class="anchor">🔗</a></h3><p>在工作上有時會使用到深拷貝，避免影響到原有的物件，起初都是使用 <code>JSON.parse(JSON.stringify(x))</code> 的方式來做深拷貝，因為不用再額外引入套件、也是比較常見的做法。</p>
+<p>有一次看到在介紹 <code>structuredClone</code> 這個 function 的文章，可以解決 <code>JSON.parse(JSON.stringify(x))</code> 會遇到的缺點，同樣也不用額外引入套件，就能達到深拷貝的需求。因為是第一次看到 <code>structuredClone</code> 這個做法，所以想做成筆記，同時介紹常見的深淺拷貝方式、使用 structuredClone 的優缺點，以及最後如何實作手寫深拷貝。</p>
+<h3 id="這篇文會提到">這篇文會提到 <a href="#%e9%80%99%e7%af%87%e6%96%87%e6%9c%83%e6%8f%90%e5%88%b0" class="anchor">🔗</a></h3><ul>
+<li><a href="#%E7%B0%A1%E4%BB%8B%E6%B7%BA%E6%8B%B7%E8%B2%9D%E8%88%87%E6%B7%B1%E6%8B%B7%E8%B2%9D">簡介淺拷貝與深拷貝</a></li>
+<li><a href="#%E5%B8%B8%E8%A6%8B%E7%9A%84%E6%B7%BA%E6%8B%B7%E8%B2%9D%E4%BD%9C%E6%B3%95">常見的淺拷貝作法</a></li>
+<li><a href="#%E5%B8%B8%E8%A6%8B%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B2%9D%E4%BD%9C%E6%B3%95">常見的深拷貝作法</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-structuredclone-%E4%BE%86%E9%80%B2%E8%A1%8C%E6%B7%B1%E6%8B%B7%E8%B2%9D">使用 structuredClone() 來進行深拷貝</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C%E6%89%8B%E5%AF%AB%E6%B7%B1%E6%8B%B7%E8%B2%9D">實作手寫深拷貝</a></li>
+</ul>
+<h3 id="簡介淺拷貝與深拷貝">簡介淺拷貝與深拷貝 <a href="#%e7%b0%a1%e4%bb%8b%e6%b7%ba%e6%8b%b7%e8%b2%9d%e8%88%87%e6%b7%b1%e6%8b%b7%e8%b2%9d" class="anchor">🔗</a></h3><ul>
+<li><strong>淺拷貝</strong>：在拷貝時，只針對原始型別進行拷貝，創建新的記憶體位址；但對於物件類（object, array 等）不會建立新的記憶體位址，而是共同指向相同的位址。</li>
+</ul>
+<p>如果 result 針對 <code>result.array</code> 做了 <code>push</code> 的動作，會讓 <code>result.array</code> 的陣列多一個 <code>4</code> 元素，但因為和 <code>被拷貝對象.array</code> 共用記憶體位址，實際上是更改到同一個 array。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">被拷貝對象</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">string</span><span class="o">:</span> <span class="s2">&#34;hi&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">array</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">被拷貝對象</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nx">result</span><span class="p">.</span><span class="nx">array</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">array</span><span class="p">);</span> <span class="c1">// [1, 2, 3, 4]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">被拷貝對象</span><span class="p">.</span><span class="nx">array</span><span class="p">);</span> <span class="c1">// [1, 2, 3, 4]
+</span></span></span></code></pre></div><ul>
+<li><strong>深拷貝</strong>：拷貝對象與被拷貝對象各自指向不同的記憶體位址。</li>
+</ul>
+<h3 id="常見的淺拷貝作法">常見的淺拷貝作法 <a href="#%e5%b8%b8%e8%a6%8b%e7%9a%84%e6%b7%ba%e6%8b%b7%e8%b2%9d%e4%bd%9c%e6%b3%95" class="anchor">🔗</a></h3><p>要達到淺拷貝，有以下方式</p>
+<ul>
+<li>Object spread: <code>{ ...被拷貝對象 }</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">nestedArr</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">string</span><span class="o">:</span> <span class="s2">&#34;hi&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">a</span> <span class="p">};</span>
+</span></span></code></pre></div><ul>
+<li><code>Object.assign({}, 被淺拷貝的對象)</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">nestedArr</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">string</span><span class="o">:</span> <span class="s2">&#34;hi&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">a</span><span class="p">);</span>
+</span></span></code></pre></div><ul>
+<li><code>Object.create(被拷貝對象)</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">nestedArr</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">string</span><span class="o">:</span> <span class="s2">&#34;hi&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+</span></span></code></pre></div><h3 id="常見的深拷貝作法">常見的深拷貝作法 <a href="#%e5%b8%b8%e8%a6%8b%e7%9a%84%e6%b7%b1%e6%8b%b7%e8%b2%9d%e4%bd%9c%e6%b3%95" class="anchor">🔗</a></h3><p>要達到深拷貝，通常會有兩種方式</p>
+<ul>
+<li><code>JSON.parse(JSON.stringify(被拷貝對象))</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">nestedArr</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">string</span><span class="o">:</span> <span class="s2">&#34;hi&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">a</span><span class="p">));</span>
+</span></span></code></pre></div><p>這個方法主要會碰到的缺點是，<code>JSON.stringify</code> 無法處理複雜的物件，只能處理簡單的物件、陣列以及原始型別的值</p>
+<ol>
+<li>如果他遇到 <code>Date</code> 則會將他轉為字串</li>
+<li>如果遇到 <code>Set</code>, <code>Map</code>, <code>Regex</code>, <code>File</code>, <code>Error</code>, <code>DOM節點</code>，會把它們轉為空物件</li>
+<li>遇到 <code>undefined</code>, <code>function</code> 型別，甚至會直接忽略</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">exampleObj</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dateString</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">set</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">map</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">([</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&#34;one&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&#34;two&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&#34;three&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">regex</span><span class="o">:</span> <span class="sr">/hello/</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">file</span><span class="o">:</span> <span class="k">new</span> <span class="nx">File</span><span class="p">([</span><span class="s2">&#34;file contents&#34;</span><span class="p">],</span> <span class="s2">&#34;example.txt&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">error</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&#34;example error&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">domNode</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&#34;div&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">undefinedValue</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">func</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;example function&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">exampleObj</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">{
+</span></span></span><span class="line"><span class="cl"><span class="cm">    &#34;dateString&#34;: &#34;2024-02-14T08:48:25.118Z&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="cm">    &#34;set&#34;: {},
+</span></span></span><span class="line"><span class="cl"><span class="cm">    &#34;map&#34;: {},
+</span></span></span><span class="line"><span class="cl"><span class="cm">    &#34;regex&#34;: {},
+</span></span></span><span class="line"><span class="cl"><span class="cm">    &#34;file&#34;: {},
+</span></span></span><span class="line"><span class="cl"><span class="cm">    &#34;error&#34;: {},
+</span></span></span><span class="line"><span class="cl"><span class="cm">    &#34;domNode&#34;: {}
+</span></span></span><span class="line"><span class="cl"><span class="cm">}
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></div><ul>
+<li><code>_.cloneDeep(被拷貝對象)</code>
+可以解決 <code>JSON.parse(JSON.stringify(被拷貝對象))</code> 遇到的問題，上述型別可以被拷貝，而主要考慮的點在於要使用 <code>_.cloneDeep()</code> 需要額外 import 這個 function 或是 lodash，可能導致檔案變大、加載時間變長，但如果原本在專案裡面就有使用 lodash，<code>_.cloneDeep()</code> 也是一個方式。</li>
+</ul>
+<h3 id="使用-structuredclone-來進行深拷貝">使用 structuredClone() 來進行深拷貝 <a href="#%e4%bd%bf%e7%94%a8-structuredclone-%e4%be%86%e9%80%b2%e8%a1%8c%e6%b7%b1%e6%8b%b7%e8%b2%9d" class="anchor">🔗</a></h3><p><code>structuredClone()</code> 可以解決 <code>JSON.parse(JSON.stringify(被拷貝對象))</code> 大部分的問題，可以被拷貝的型別包括 <code>Date</code>, <code>Set</code>, <code>Map</code>, <code>Error</code>, <code>RegExp</code>, <code>ArrayBuffer</code>, <code>Blob</code>, <code>File</code>, <code>ImageData</code> 等，且為 Web API 提供的方法，所以不用再額外 import 套件，可以直接使用（Node.js 17 以上的版本也支援 structuredClone 這個方法了）。</p>
+<p>而 <code>structuredClone()</code> 也有一些不能被深拷貝的型別：<code>function</code>、<code>DOM 節點</code>、<code>原型鏈</code></p>
+<ul>
+<li><strong>拷貝 function</strong>: 會報錯</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">structuredClone</span><span class="p">({</span> <span class="nx">fn</span><span class="o">:</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{}</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// VM901:1 Uncaught DOMException: Failed to execute &#39;structuredClone&#39; on &#39;Window&#39;: () =&gt; { } could not be cloned.
+</span></span></span></code></pre></div><ul>
+<li><strong>拷貝 DOM 節點</strong>：會報錯</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">structuredClone</span><span class="p">({</span> <span class="nx">el</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// VM930:1 Uncaught DOMException: Failed to execute &#39;structuredClone&#39; on &#39;Window&#39;: HTMLBodyElement object could not be cloned.
+</span></span></span></code></pre></div><ul>
+<li><strong>原型鏈</strong>：去深拷貝一個實例的時候，拷貝出來的結果只會有該實例的屬性，不會拷貝到實例的原型鏈</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">class</span> <span class="nx">MyClass</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">constructor</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nx">getValue</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">obj1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyClass</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">obj2</span> <span class="o">=</span> <span class="nx">structuredClone</span><span class="p">(</span><span class="nx">obj1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// obj2 為 { value: 10 }
+</span></span></span></code></pre></div><h3 id="實作手寫深拷貝">實作手寫深拷貝 <a href="#%e5%af%a6%e4%bd%9c%e6%89%8b%e5%af%ab%e6%b7%b1%e6%8b%b7%e8%b2%9d" class="anchor">🔗</a></h3><p>如果不用上述提到的三種方式來進行深拷貝，而選擇用手寫的方式</p>
+<ol>
+<li>建立一個 function，傳入兩個參數：obj（要被拷貝的對象）、weakMap（記錄是否已經處理過該對象）</li>
+<li>先檢查是否為物件，如果不是物件則代表為原始型別，可以直接回傳結果</li>
+<li>查看 weakMap 是否已經存在這個 obj 鍵對，如果存在則直接回傳 weakMap 該鍵對的值</li>
+<li>檢查是否為 <code>Date</code> 或是 <code>RegExp</code> 型別，如果是的話則用 <code>new Date()</code> 或 <code>new RegExp()</code> 創建新的實例</li>
+<li>以上過渡之後，剩下可能的型別剩下物件（可能是陣列或物件）</li>
+<li>建立一個新的物件：如果 obj 是陣列的話，則建立空陣列、如果 obj 不是陣列的話，則建立空物件</li>
+<li>將這個新物件存入 weakMap</li>
+<li>使用 <code>Object.entries</code> 進行遞迴，直到所有對象被處理完</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">deepClone</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&#34;object&#34;</span><span class="p">)</span> <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">map</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">obj</span><span class="p">))</span> <span class="k">return</span> <span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Date</span><span class="p">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">RegExp</span><span class="p">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">?</span> <span class="p">[]</span> <span class="o">:</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">result</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="p">[</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">]</span> <span class="k">of</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">obj</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">result</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">deepClone</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="結語">結語 <a href="#%e7%b5%90%e8%aa%9e" class="anchor">🔗</a></h3><p>以上是最近看了幾篇文章後整理的深淺拷貝的方式，以及近期在開發上常用的 <code>structuredClone()</code>，也因為看到幾篇文章有提到如何手寫深拷貝，搭配 ChatGPT 也把這個 function 整理在文章裡面。</p>
+<p>如果有任何想法或錯誤，再麻煩跟我說聲！非常感謝觀看的您～
+可以透過信箱(<a href="mailto:zzuhanlin@gmail.com">zzuhanlin@gmail.com</a>)或 <a href="https://www.linkedin.com/in/zzuhanlin/">linkedin</a> 找到我</p>
+<h3 id="ref-參考文章">REF 參考文章 <a href="#ref-%e5%8f%83%e8%80%83%e6%96%87%e7%ab%a0" class="anchor">🔗</a></h3><ul>
+<li><a href="https://www.builder.io/blog/structured-clone#property-descriptors-setters-and-getters" target="_blank">Deep Cloning Objects in JavaScript, the Modern Way</a>
+</li>
+<li><a href="https://www.explainthis.io/zh-hant/swe/shallow-copy-and-deep-copy" target="_blank">請實踐 JavaScript 淺拷貝 (shallow copy) 和深拷貝 (deep copy)</a>
+</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/structuredClone" target="_blank">structuredClone() global function</a>
+</li>
+<li><a href="https://www.codingbeautydev.com/blog/javascript-structuredclone-is-not-defined" target="_blank">How to Fix the "structuredClone is not defined" Error in Node.js</a>
+</li>
+</ul>
+
+    </div>
+
+    
+
+    <div class="disqus markdown" style="width: 100%;">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'https-www-zzuhann-work';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+</section>
+
+</div>
+      <div class="side">
+         <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/ts-unknown-vs-any/">Ts Unknown vs Any</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-slug-for-dynamic-routes/">使用 Next.js 的 Dynamic Routes 來處理多層結構的頁面</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-flex-to-limit-font-size/">使用 flex box 來防止字體被動態調整？</a>
+            </li>
+        
+            <li>
+                <a href="/posts/strict-false-ignore-null-ts/">tsconfig 設定 strict: false 會忽略 null 的型別判定</a>
+            </li>
+        
+            <li>
+                <a href="/posts/brain-can-not-multiwork/">讀書日記 | 大腦沒辦法多工，即使訓練也一樣！</a>
+            </li>
+        
+    </ul>
+</div>
+ 
+        <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/typescript">typescript(4)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端(2)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術(6)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%9D%82%E6%8A%80%E6%B5%85%E5%B0%9D">杂技浅尝(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98">觀看筆記(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98">讀書日記(2)</a>
+            </li>
+        
+    </ul>
+</div>
+ <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/css">css (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/css-challenge">css challenge (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/effective-typescript">effective typescript (4)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/hugo">hugo (3)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/next.js">next.js (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/reading-diary">reading diary (2)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/typescript">typescript (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/video-diary">video diary (1)</a>
+            </li>
+        
+    </ul>
+</div>
+
+      </div>
+    </main>
+  </body>
+</html>

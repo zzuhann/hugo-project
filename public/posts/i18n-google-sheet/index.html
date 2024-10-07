@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta content="i18n, 多國語系, i18n-next" name="keywords">
+    <meta
+      content="實作 react-i18next：使用 i18-ally、google sheet 維護多國語系 - Han"
+      property="og:title"
+    />
+    <meta
+      content="紀錄 han 的前端/生活/各種筆記與日常～！ - 公司導入了多國語系 i18n-next 後，遇到的問題是如何更快速的維護需要被翻譯的文字、如何減少人力但能達到相同的效果？這篇文章會分享 i18n-ally 的使用，以及如何在 google sheet 維護多國語系。"
+      property="og:description"
+    />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>實作 react-i18next：使用 i18-ally、google sheet 維護多國語系 | Han</title>
+<link rel="canonical" href="http://localhost:1313/posts/i18n-google-sheet/">
+<meta name="description" content="公司導入了多國語系 i18n-next 後，遇到的問題是如何更快速的維護需要被翻譯的文字、如何減少人力但能達到相同的效果？這篇文章會分享 i18n-ally 的使用，以及如何在 google sheet 維護多國語系。" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="實作 react-i18next：使用 i18-ally、google sheet 維護多國語系 | Han" />
+<meta property="og:url" content="http://localhost:1313/posts/i18n-google-sheet/" />
+<meta property="og:description" content="公司導入了多國語系 i18n-next 後，遇到的問題是如何更快速的維護需要被翻譯的文字、如何減少人力但能達到相同的效果？這篇文章會分享 i18n-ally 的使用，以及如何在 google sheet 維護多國語系。" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+ 
+  </head>
+
+  <body>
+    <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="http://localhost:1313/">Han</a>
+
+        <nav class="menu">
+            
+                <div class="menu-item">
+                    
+                        <a href="/posts/">Posts</a>
+                    
+                </div>
+            
+                <div class="menu-item">
+                    
+                        <a href="/about/">About</a>
+                    
+                </div>
+            
+        </nav>
+    </div>
+</header>
+
+    <main class="main-wrapper">
+      <div class="main">
+
+<section class="single">
+    <h1 class="title">實作 react-i18next：使用 i18-ally、google sheet 維護多國語系</h1>
+
+    
+        <div class="tip">
+            <time datetime="2024-01-29 16:42:45 &#43;0800 CST">2024/01/29</time>
+            <span class="split">·</span>
+            <span> 2739 words </span>
+            <span class="split">·</span>
+            <span>
+                6 minutes to read
+            </span>
+        </div>
+    
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端</a>
+            
+        </div>
+        
+
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <h3 id="前情提要">前情提要 <a href="#%e5%89%8d%e6%83%85%e6%8f%90%e8%a6%81" class="anchor">🔗</a></h3><p>公司在約半年前為了做多國語系，導入了 i18n-next。前期僅限於測試階段，所以需要被翻譯的文字並不算多，後來正式導入之後，需要維護網站上所有文字，以及三種語言，加上每個人手上都有不少的工作量，沒有太多的時間去人工維護翻譯的整理與更新。</p>
+<p>因此我希望可以讓這段多國語系翻譯的過程盡量自動化，減少人力的維護，在這篇文章主要會提及如何使用 google sheet 來與 PM、翻譯人員進行合作，以及如何將程式碼的變數更新到 google sheet 上，又是如何將在 google sheet 上翻譯完成的文字更新到程式碼內，以及如何透過套件及 function 來讓維護多國語系更為沒有壓力。</p>
+<h3 id="基本設定">基本設定 <a href="#%e5%9f%ba%e6%9c%ac%e8%a8%ad%e5%ae%9a" class="anchor">🔗</a></h3><p>大致設定，是參考這篇文章：<a href="https://medium.com/@a401120174/%E4%BD%BF%E7%94%A8-react-i18next-%E4%BE%86%E6%89%93%E9%80%A0%E5%A4%9A%E5%9C%8B%E8%AA%9E%E8%A8%80%E7%B6%B2%E7%AB%99%E5%90%A7-i18n-5b9c70c05d24" target="_blank">使用 react-i18next 來打造多國語言網站(i18n)</a>
+</p>
+<p>稍微不同的地方是，我們在專案中使用的翻譯檔案是照語言區分：zh-TW.json, en.json, vi.json</p>
+<h3 id="延伸做出的客製化">延伸做出的客製化 <a href="#%e5%bb%b6%e4%bc%b8%e5%81%9a%e5%87%ba%e7%9a%84%e5%ae%a2%e8%a3%bd%e5%8c%96" class="anchor">🔗</a></h3><p>除了上述基本的設定，公司專案也做了一些客製化：</p>
+<ol>
+<li>
+<p>VS Code Extension: <a href="https://github.com/lokalise/i18n-ally" target="_blank">i18n-ally</a>
+
+在還沒下載 i18n-ally 之前，使用 i18n-next 在程式碼裡面會長的像下面這樣：
+<img src="https://i.imgur.com/Z67hoUO.png" alt="Imgur">
+<em>(圖片取自 <a href="https://github.com/lokalise/i18n-ally)">https://github.com/lokalise/i18n-ally)</a></em>
+對於 key 越來越長的情況下，基本上很難閱讀。</p>
+<!-- raw HTML omitted -->
+<p><img src="https://i.imgur.com/vtpAfK7.png" alt="Imgur">
+<em>(圖片取自 <a href="https://github.com/lokalise/i18n-ally)">https://github.com/lokalise/i18n-ally)</a></em></p>
+<p>設定可以參考這篇文章：<a href="https://wualnz.com/Vue-i18n-%E7%A5%9E%E5%99%A8-i18n-ally/" target="_blank">[Vue] i18n 神器 i18n-ally</a>
+
+<!-- raw HTML omitted -->
+除了可以在程式碼內顯示特定語言目前的翻譯文字，我覺得更為方便的地方是
+<img src="https://github.com/lokalise/i18n-ally/raw/screenshots/hover.png?raw=true" alt="Imgur">
+<em>(圖片取自 <a href="https://github.com/lokalise/i18n-ally)">https://github.com/lokalise/i18n-ally)</a></em>
+hover 到 key 上面，i18n-ally 就會顯示目前這個 key 對應到各語言的文字，點擊右邊數過來第二個的筆 ✏️，輸入這個 key 在該語言對應到的文字，他就會自動更新到該語言的 json 檔，不用辛苦去 json 檔找到位置後再新增。
+<!-- raw HTML omitted --></p>
+</li>
+<li>
+<p>讓 i18n-next 的 t function 不只是傳入 key，也能快速帶入預設值
+僅帶入 key 的情況下，如果想要針對文字去做修改，即使是全域搜尋也不容易一次找到要修改的地方，因此針對 i18n-next 提供的 t function 再寫了一個 function，讓團隊成員除了傳入 key 以外，還需帶入預設值。
+<!-- raw HTML omitted --></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">import</span> <span class="p">{</span> <span class="nx">t</span> <span class="kr">as</span> <span class="nx">trans</span> <span class="p">}</span> <span class="kr">from</span> <span class="s2">&#34;i18next&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="kr">const</span> <span class="nx">t</span> <span class="o">=</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">defaultValue</span><span class="p">,</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">trans</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="p">{</span> <span class="p">...</span><span class="nx">params</span><span class="p">,</span> <span class="nx">defaultValue</span> <span class="p">})</span> <span class="o">||</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>之後團隊要新增 i18n 的 key 時，就可以這樣使用，如果其他語言尚未補上翻譯，則就會顯示預設值。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">import</span> <span class="p">{</span> <span class="nx">t</span> <span class="p">}</span> <span class="kr">from</span> <span class="s2">&#34;utils/i18n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">t</span><span class="p">(</span> <span class="s1">&#39;customer.email&#39;</span><span class="p">,</span> <span class="s1">&#39;電子信箱&#39;</span><span class="p">,</span> <span class="p">)&lt;/</span><span class="nt">p</span><span class="p">&gt;;</span>
+</span></span></code></pre></div></li>
+<li>
+<p>使用 google sheet 來維護越來越多的 key 與需要翻譯的內容
+隨著專案越來越大，需要翻譯的文字開始變多、以及變更需求的同時，文字也可能需要隨之調整，因此使用 google sheet 來維護翻譯。</p>
+<!-- raw HTML omitted -->
+<p>初期，需要翻譯的文字還沒那麼多、也還沒有樹立規則該如何維護這份文件，基本上是工程師在做完需求、更新完語言 json 檔之後，再手動從 json 檔複製 key 及文字到 google sheet。隨著需求與工作量都變多，光是複製貼上去維護 google sheet 的時間就要花上半小時以上，於是我和同事有初步討論之後，當時有以下痛點：</p>
+<ol>
+<li>從 json 檔複製貼上到 google sheet 的這一段過程，雖然很直覺，但是很耗時</li>
+<li>如果要變更需求、調整文字，語意也隨之不同，則需要重新翻譯，需要讓翻譯人員知道哪裡被調整</li>
+<li>新增新的 key 到 google sheet 上，需要讓翻譯人員知道哪些是新增的</li>
+<li>翻譯人員翻譯完成後，要如何快速更新 json 檔</li>
+</ol>
+<!-- raw HTML omitted -->
+<p>針對上述痛點，思考的解法如下：</p>
+<ol>
+<li>工程師僅需完成更新程式碼、json 檔的部分，從 json 檔更新到 google sheet 的這一段過程，我會寫一段 node.js 程式碼去跑排程，每半個月執行一次更新 google sheet</li>
+</ol>
+<!-- raw HTML omitted -->
+<p>這是我們在 google sheet 上的格式 key - 中文 value - 英文 value - 越南文 value：
+<img src="https://i.imgur.com/jnFoR7K.png" alt="Imgur"></p>
+<!-- raw HTML omitted -->
+<p>舉例來說，json 檔會是這樣設定（其他語言則為將蘋果、香蕉替換為對應的語言翻譯）：
+<img src="https://i.imgur.com/qPF6AvZ.png" alt="Imgur"></p>
+<!-- raw HTML omitted -->
+<p>並且在專案中去執行以下程式碼，將 json 檔內容更新至 google sheet</p>
+<p>(亦可到 github gist 查看更好看的排版：<a href="https://gist.github.com/zzuhann/617c216ac4ddf94ff871732337e4095a" target="_blank">語言 json 檔 conver to google sheet</a>
+)</p>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&#34;fs-extra&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&#34;path&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="p">{</span> <span class="nx">google</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&#34;googleapis&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">auth</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">GoogleAuth</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 設定您的 Google Sheets API 金鑰憑證
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">keyFile</span><span class="o">:</span> <span class="s2">&#34;./script/googleSheetConfig.json&#34;</span><span class="p">,</span> <span class="c1">// 更改為 Google Sheets API 金鑰憑證放置的位置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">scopes</span><span class="o">:</span> <span class="p">[</span><span class="s2">&#34;https://www.googleapis.com/auth/spreadsheets&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">sheets</span> <span class="o">=</span> <span class="nx">google</span><span class="p">.</span><span class="nx">sheets</span><span class="p">({</span> <span class="nx">version</span><span class="o">:</span> <span class="s2">&#34;v4&#34;</span><span class="p">,</span> <span class="nx">auth</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * spreadsheetId: Google Sheets 的 ID
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * sheetName: 工作表名稱
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">spreadsheetId</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">spreadsheetId</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">sheetName</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">sheetName</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * JSON 檔轉換為 [&#39;key&#39;, &#39;value&#39;, &#39;value&#39;, &#39;value&#39;] 格式
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">files</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s2">&#34;../src/locales&#34;</span><span class="p">,</span> <span class="sb">`zh-TW.json`</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s2">&#34;../src/locales&#34;</span><span class="p">,</span> <span class="sb">`en.json`</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s2">&#34;../src/locales&#34;</span><span class="p">,</span> <span class="sb">`vi.json`</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">zhTWData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&#34;utf8&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">enData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">files</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&#34;utf8&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">viData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">files</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&#34;utf8&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">translationData</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">// 用來存放翻譯資料的物件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">translations</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">language</span><span class="o">:</span> <span class="s2">&#34;zhTW&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">data</span><span class="o">:</span> <span class="nx">zhTWData</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">language</span><span class="o">:</span> <span class="s2">&#34;en&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">data</span><span class="o">:</span> <span class="nx">enData</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">language</span><span class="o">:</span> <span class="s2">&#34;vi&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">data</span><span class="o">:</span> <span class="nx">viData</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">jsonToSheet</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">translations</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">language</span> <span class="o">=</span> <span class="nx">translations</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">language</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">processObject</span><span class="p">(</span><span class="nx">translations</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="nx">translationData</span><span class="p">,</span> <span class="nx">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">language</span> <span class="o">===</span> <span class="s2">&#34;vi&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 將翻譯資料轉換為陣列格式並放入 data 中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nb">Object</span><span class="p">.</span><span class="nx">entries</span><span class="p">(</span><span class="nx">translationData</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(([</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">])</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">key</span><span class="p">,</span> <span class="p">...</span><span class="nx">value</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * 存取 Google Sheets 資料
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * 若 Google Sheets 無資料，則直接寫入資料
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * 若 Google Sheets 有資料，則比對資料是否有異動
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * 異動情況：
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * 1. 三個語言中只要有其中一個是空值，則該列多一欄為 need to translate
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * 2. 三個語言中只要有其中一個有異動，則在該欄 +4 欄放置異動後的值方便比對
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * 3. 若 JSON 檔的 key 不存在於 Google Sheets，則該列多一欄為 added
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">await</span> <span class="nx">sheets</span><span class="p">.</span><span class="nx">spreadsheets</span><span class="p">.</span><span class="nx">values</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">get</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">spreadsheetId</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">range</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">sheetName</span><span class="si">}</span><span class="sb">!A2:D`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">rows</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">values</span> <span class="o">||</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 如果此表無內容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">// 寫入數據到 Google Sheets
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="nx">sheets</span><span class="p">.</span><span class="nx">spreadsheets</span><span class="p">.</span><span class="nx">values</span><span class="p">.</span><span class="nx">update</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">spreadsheetId</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">range</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">sheetName</span><span class="si">}</span><span class="sb">!A2:D`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">valueInputOption</span><span class="o">:</span> <span class="s2">&#34;USER_ENTERED&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">requestBody</span><span class="o">:</span> <span class="p">{</span> <span class="nx">values</span><span class="o">:</span> <span class="p">[...</span><span class="nx">data</span><span class="p">]</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">          <span class="p">});</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;JSON data imported to Google Sheets successfully.&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Error importing JSON data to Google Sheets:&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">error</span>
+</span></span><span class="line"><span class="cl">          <span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">header</span> <span class="o">=</span> <span class="nx">rows</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">row</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="nx">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">length</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="kr">const</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">          <span class="kr">const</span> <span class="nx">rowIndex</span> <span class="o">=</span> <span class="nx">header</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="k">if</span> <span class="p">(</span><span class="nx">rowIndex</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 如果此 key 已經存在於表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">rows</span><span class="p">[</span><span class="nx">rowIndex</span><span class="p">][</span><span class="nx">j</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">rows</span><span class="p">[</span><span class="nx">rowIndex</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;need to translate&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span> <span class="c1">// 如果中文、英文、越南文有任何一格為空，最後一格會註記 &#39;need to translate&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>              <span class="k">if</span> <span class="p">(</span><span class="nx">rows</span><span class="p">[</span><span class="nx">rowIndex</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">rows</span><span class="p">[</span><span class="nx">rowIndex</span><span class="p">][</span><span class="nx">j</span><span class="p">]</span> <span class="o">!==</span> <span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">rows</span><span class="p">[</span><span class="nx">rowIndex</span><span class="p">][</span><span class="nx">j</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">j</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">rows</span><span class="p">[</span><span class="nx">rowIndex</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;updated&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span> <span class="c1">// 如果任何一格有進行變動，則最後一格會註記 &#39;updated&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 如果此 key 並不存在於表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kr">const</span> <span class="nx">newRow</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">key</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">              <span class="s2">&#34;added&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="p">];</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">newRow</span><span class="p">[</span><span class="nx">j</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">newRow</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;need to translate&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">rows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">newRow</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">sheets</span><span class="p">.</span><span class="nx">spreadsheets</span><span class="p">.</span><span class="nx">values</span><span class="p">.</span><span class="nx">update</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">spreadsheetId</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">range</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">sheetName</span><span class="si">}</span><span class="sb">!A2:H`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">valueInputOption</span><span class="o">:</span> <span class="s2">&#34;USER_ENTERED&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">requestBody</span><span class="o">:</span> <span class="p">{</span> <span class="nx">values</span><span class="o">:</span> <span class="p">[...</span><span class="nx">rows</span><span class="p">]</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">});</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">processObject</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">prefix</span><span class="p">,</span> <span class="nx">translationData</span><span class="p">,</span> <span class="nx">languageOrder</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&#34;object&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">newPrefix</span> <span class="o">=</span> <span class="nx">prefix</span> <span class="o">?</span> <span class="sb">`</span><span class="si">${</span><span class="nx">prefix</span><span class="si">}</span><span class="sb">.</span><span class="si">${</span><span class="nx">key</span><span class="si">}</span><span class="sb">`</span> <span class="o">:</span> <span class="nx">key</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">processObject</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">newPrefix</span><span class="p">,</span> <span class="nx">translationData</span><span class="p">,</span> <span class="nx">languageOrder</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">columnName</span> <span class="o">=</span> <span class="nx">prefix</span> <span class="o">?</span> <span class="sb">`</span><span class="si">${</span><span class="nx">prefix</span><span class="si">}</span><span class="sb">.</span><span class="si">${</span><span class="nx">key</span><span class="si">}</span><span class="sb">`</span> <span class="o">:</span> <span class="nx">key</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">translations</span> <span class="o">=</span> <span class="nx">translationData</span><span class="p">[</span><span class="nx">columnName</span><span class="p">]</span> <span class="o">??</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="nx">translations</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="nx">languageOrder</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">translations</span><span class="p">[</span><span class="nx">languageOrder</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">translations</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">translationData</span><span class="p">[</span><span class="nx">columnName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">translations</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ol start="2">
+<li>在從 json -&gt; google sheet 的過程 1. 會去比對各個語言當前在 json 的文字以及對應到 google sheet 的文字是否相同，如果不同，會註記為 <em>updated</em> 2. 如果在 google sheet 中有需要被翻譯的地方（例如英文處是空格，尚未被翻譯），會註記為 <em>need to translate</em> 3. 如果是本次新增，而各個語言都已經被填寫，會註記為 <em>added</em> ，讓翻譯人員 double check 是否需要修改 4. 善用 google sheet 裡面的公式，我有設定如果最後一格有任何註記，則整行都會被上背景色，讓翻譯人員一眼看出哪裡要被注意
+<img src="https://i.imgur.com/DPf4bH4.png" alt="Imgur"></li>
+</ol>
+<!-- raw HTML omitted -->
+<ol start="3">
+<li>翻譯人員翻譯完後，會告知 PM，再由 PM 開單給工程師，手動執行 node.js 程式碼，將 google sheet 目前的翻譯文字更新到 json 檔</li>
+</ol>
+<!-- raw HTML omitted -->
+<p>google sheet -&gt; json 檔這段的程式碼
+(亦可到 github gist 查看更好看的排版：<a href="https://gist.github.com/zzuhann/83993063dca25115d42b9dd1f178d8ef" target="_blank">google sheet convert to json</a>
+)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs-extra&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">unflatten</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;flat&#39;</span><span class="p">).</span><span class="nx">unflatten</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="p">{</span> <span class="nx">google</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;googleapis&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">auth</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">GoogleAuth</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 設定您的 Google Sheets API 金鑰憑證
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">keyFile</span><span class="o">:</span> <span class="s1">&#39;./script/googleSheetConfig.json&#39;</span><span class="p">,</span> <span class="c1">// keyFile 在專案的位置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">scopes</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;https://www.googleapis.com/auth/spreadsheets&#39;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">sheets</span> <span class="o">=</span> <span class="nx">google</span><span class="p">.</span><span class="nx">sheets</span><span class="p">({</span> <span class="nx">version</span><span class="o">:</span> <span class="s1">&#39;v4&#39;</span><span class="p">,</span> <span class="nx">auth</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">spreadsheetId</span> <span class="o">=</span> <span class="p">{</span><span class="nx">googleSheetId</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">sheetName</span> <span class="o">=</span> <span class="p">{</span><span class="nx">googleSheet</span> <span class="nx">標籤名稱</span><span class="err">，</span><span class="nx">建議用英文</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">files</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;zh-TW&#39;</span><span class="p">,</span> <span class="s1">&#39;en&#39;</span><span class="p">,</span> <span class="s1">&#39;vi&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">filePaths</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;../src/locales&#39;</span><span class="p">,</span> <span class="sb">`zh-TW.json`</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;../src/locales&#39;</span><span class="p">,</span> <span class="sb">`en.json`</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;../src/locales&#39;</span><span class="p">,</span> <span class="sb">`vi.json`</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 讀取 google sheet 資料並轉換成物件格式
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 如果 key 存在於 google sheet 及 json 檔案且有值，google sheet 的值會覆蓋 json 檔案的該 key 的值
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="nx">sheets</span><span class="p">.</span><span class="nx">spreadsheets</span><span class="p">.</span><span class="nx">values</span>
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nx">get</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">spreadsheetId</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">range</span><span class="o">:</span> <span class="sb">`</span><span class="si">${</span><span class="nx">sheetName</span><span class="si">}</span><span class="sb">!A2:D`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">existingFiles</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;zh-TW&#39;</span><span class="o">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readJSONSync</span><span class="p">(</span><span class="nx">filePaths</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">en</span><span class="o">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readJSONSync</span><span class="p">(</span><span class="nx">filePaths</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">vi</span><span class="o">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readJSONSync</span><span class="p">(</span><span class="nx">filePaths</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">values</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">result</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">const</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 語言包
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">t</span> <span class="o">&lt;</span> <span class="nx">files</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">t</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">?</span> <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nx">value</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span> <span class="o">!==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kr">const</span> <span class="nx">keys</span> <span class="o">=</span> <span class="nx">key</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">let</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">existingFiles</span><span class="p">[</span><span class="nx">files</span><span class="p">[</span><span class="nx">t</span><span class="p">]];</span>
+</span></span><span class="line"><span class="cl">                <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">m</span> <span class="o">&lt;</span> <span class="nx">keys</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">m</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="kr">const</span> <span class="nx">k</span> <span class="o">=</span> <span class="nx">keys</span><span class="p">[</span><span class="nx">m</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">current</span><span class="p">[</span><span class="nx">k</span><span class="p">])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">current</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="nx">m</span> <span class="o">===</span> <span class="nx">keys</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">current</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">current</span> <span class="o">=</span> <span class="nx">current</span><span class="p">[</span><span class="nx">k</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">fileName</span> <span class="k">of</span> <span class="nx">files</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">fs</span><span class="p">.</span><span class="nx">writeJSONSync</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;../src/locales&#39;</span><span class="p">,</span> <span class="sb">`</span><span class="si">${</span><span class="nx">fileName</span><span class="si">}</span><span class="sb">.json`</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">unflatten</span><span class="p">(</span><span class="nx">existingFiles</span><span class="p">[</span><span class="nx">fileName</span><span class="p">],</span> <span class="p">{</span> <span class="nx">object</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}),</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span> <span class="nx">spaces</span><span class="o">:</span> <span class="mi">2</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div></li>
+</ol>
+<h3 id="在那之後">在那之後 <a href="#%e5%9c%a8%e9%82%a3%e4%b9%8b%e5%be%8c" class="anchor">🔗</a></h3><p>目前大致上是使用此方式維護多國語系，後續像是常用的文字應該要被集中管理，翻譯就不用經常翻譯相同的文字，以及這兩段自動化的程式碼在未來應該也要被優化。但至少已經解決了當初團隊所面臨到的痛點，也分享給大家～！如果有想法可以在透過信箱(<a href="mailto:zzuhanlin@gmail.com">zzuhanlin@gmail.com</a>)或 <a href="https://www.linkedin.com/in/zzuhanlin/">linkedin</a> 向我分享或討論，感謝！</p>
+
+    </div>
+
+    
+
+    <div class="disqus markdown" style="width: 100%;">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'https-www-zzuhann-work';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+</section>
+
+</div>
+      <div class="side">
+         <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/ts-unknown-vs-any/">Ts Unknown vs Any</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-slug-for-dynamic-routes/">使用 Next.js 的 Dynamic Routes 來處理多層結構的頁面</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-flex-to-limit-font-size/">使用 flex box 來防止字體被動態調整？</a>
+            </li>
+        
+            <li>
+                <a href="/posts/strict-false-ignore-null-ts/">tsconfig 設定 strict: false 會忽略 null 的型別判定</a>
+            </li>
+        
+            <li>
+                <a href="/posts/brain-can-not-multiwork/">讀書日記 | 大腦沒辦法多工，即使訓練也一樣！</a>
+            </li>
+        
+    </ul>
+</div>
+ 
+        <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/typescript">typescript(4)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端(2)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術(6)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%9D%82%E6%8A%80%E6%B5%85%E5%B0%9D">杂技浅尝(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98">觀看筆記(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98">讀書日記(2)</a>
+            </li>
+        
+    </ul>
+</div>
+ <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/css">css (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/css-challenge">css challenge (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/effective-typescript">effective typescript (4)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/hugo">hugo (3)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/next.js">next.js (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/reading-diary">reading diary (2)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/typescript">typescript (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/video-diary">video diary (1)</a>
+            </li>
+        
+    </ul>
+</div>
+
+      </div>
+    </main>
+  </body>
+</html>

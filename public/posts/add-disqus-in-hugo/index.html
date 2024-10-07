@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta content="hugo 留言, disqus hugo" name="keywords">
+    <meta
+      content="在 Hugo 裡安裝 Disqus 啟用留言板功能！ - Han"
+      property="og:title"
+    />
+    <meta
+      content="紀錄 han 的前端/生活/各種筆記與日常～！ - 這個部落格正式啟用留言功能啦～！目前是留言板是採用 Disqus，也想紀錄自己從設定到安裝的過程，希望也可以幫助到想要在 Hugo 中加留言板的人！"
+      property="og:description"
+    />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>在 Hugo 裡安裝 Disqus 啟用留言板功能！ | Han</title>
+<link rel="canonical" href="http://localhost:1313/posts/add-disqus-in-hugo/">
+<meta name="description" content="這個部落格正式啟用留言功能啦～！目前是留言板是採用 Disqus，也想紀錄自己從設定到安裝的過程，希望也可以幫助到想要在 Hugo 中加留言板的人！" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="在 Hugo 裡安裝 Disqus 啟用留言板功能！ | Han" />
+<meta property="og:url" content="http://localhost:1313/posts/add-disqus-in-hugo/" />
+<meta property="og:description" content="這個部落格正式啟用留言功能啦～！目前是留言板是採用 Disqus，也想紀錄自己從設定到安裝的過程，希望也可以幫助到想要在 Hugo 中加留言板的人！" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+ 
+  </head>
+
+  <body>
+    <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="http://localhost:1313/">Han</a>
+
+        <nav class="menu">
+            
+                <div class="menu-item">
+                    
+                        <a href="/posts/">Posts</a>
+                    
+                </div>
+            
+                <div class="menu-item">
+                    
+                        <a href="/about/">About</a>
+                    
+                </div>
+            
+        </nav>
+    </div>
+</header>
+
+    <main class="main-wrapper">
+      <div class="main">
+
+<section class="single">
+    <h1 class="title">在 Hugo 裡安裝 Disqus 啟用留言板功能！</h1>
+
+    
+        <div class="tip">
+            <time datetime="2024-09-13 01:05:07 &#43;0800 CST">2024/09/13</time>
+            <span class="split">·</span>
+            <span> 1134 words </span>
+            <span class="split">·</span>
+            <span>
+                3 minutes to read
+            </span>
+        </div>
+    
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術</a>
+            
+        </div>
+        
+
+        
+            <div>
+                Tags:
+                
+                    <a href="/tags/hugo">Hugo</a>
+                
+            </div>
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <h3 id="一些前言">一些前言 <a href="#%e4%b8%80%e4%ba%9b%e5%89%8d%e8%a8%80" class="anchor">🔗</a></h3><p>前天跟了一場<a href="https://www.facebook.com/smallgoldfishblog/?locale=zh_TW" target="_blank">小金魚的人生實驗島</a>
+的分享（預計明天或後天可以來簡單分享），開始想把一些東西分享在這個部落格，而不單單只是工作與技術相關的，希望這裡可以成為紀錄我各個面向的地方，畢竟人不只是在工作而已，是由很多不同的面貌組成的。</p>
+<p>小金魚提到，要「公開」而且是可以收到回饋的地方，這個部落格目前並沒有留言板讓有其他想法的人留言，只能透過寄信或是在社群聯絡我的方式來交流一些想法，所以我決定在這個部落格加一個留言板。</p>
+<p>先說結論：我使用的是 Disqus，我沒有針對各個留言板做太多功課，但有一些基本的需求：可以放到 hugo 裡面使用、可以不登入就留言，因為預計之後文章的主題不限於技術相關，所以也不是所有人都有 github 帳號可以使用，其他的我就沒關係～ 可以先試用看看研究一下有沒有遇到痛點再來跳槽。優缺點分析我是參考這篇：<a href="https://ivonblog.com/posts/replace-giscus-with-disqus/" target="_blank">為什麼我要用Disqus取代Giscus當作Hugo留言板</a>
+</p>
+<h3 id="先在-disqus-註冊與設定">先在 Disqus 註冊與設定 <a href="#%e5%85%88%e5%9c%a8-disqus-%e8%a8%bb%e5%86%8a%e8%88%87%e8%a8%ad%e5%ae%9a" class="anchor">🔗</a></h3><h4 id="先去hahahugoshortcode8s2hbhb註冊帳號">先去<a href="https://disqus.com/" target="_blank">官網</a>
+註冊帳號 <a href="#%e5%85%88%e5%8e%bbhahahugoshortcode8s2hbhb%e8%a8%bb%e5%86%8a%e5%b8%b3%e8%99%9f" class="anchor">🔗</a></h4><p>到右上角 <code>Get Started</code> 進行註冊或 <code>Login</code> 登入
+<img src="/img/add-disqus-in-hugo-1.png" alt="disqus官網"></p>
+<h4 id="i-want-to-install-disqus-on-my-site">I want to install Disqus on my site <a href="#i-want-to-install-disqus-on-my-site" class="anchor">🔗</a></h4><p><img src="/img/add-disqus-in-hugo-2.png" alt="choose-service"></p>
+<h4 id="create-a-new-site">Create a new site <a href="#create-a-new-site" class="anchor">🔗</a></h4><ol>
+<li>輸入你的 Website Name，他會幫你轉換成下面的網址</li>
+<li>Category 都可以</li>
+<li>Language 就照你想要的語言</li>
+<li>輸入完之後就 Create Site</li>
+</ol>
+<p><img src="/img/add-disqus-in-hugo-3.png" alt="enter-info"></p>
+<h4 id="選擇免費的-basic-專案點擊-subscribe-now">選擇免費的 Basic 專案，點擊 Subscribe Now <a href="#%e9%81%b8%e6%93%87%e5%85%8d%e8%b2%bb%e7%9a%84-basic-%e5%b0%88%e6%a1%88%e9%bb%9e%e6%93%8a-subscribe-now" class="anchor">🔗</a></h4><h4 id="選擇平台">選擇平台 <a href="#%e9%81%b8%e6%93%87%e5%b9%b3%e5%8f%b0" class="anchor">🔗</a></h4><p>因為 Hugo 不在這些選項裡面，所以選擇下面的按鈕
+<code>I don't see my platform listed, install manually with Universal Code</code></p>
+<p><img src="/img/add-disqus-in-hugo-4.png" alt="choose-manually-universal-code"></p>
+<h4 id="universal-code-install-instructions">Universal Code install instructions <a href="#universal-code-install-instructions" class="anchor">🔗</a></h4><p>接下來會到這個頁面（最上面是一個 How to Install Disqus Using the Universal Code 的影片）
+直接滑下來到最底，右下角有一個 <code>Configure</code> 的按鈕
+按下去，然後不用更改，再按 <code>Next</code> 按鈕
+會到這邊
+照自己的需求去選就好，之後也還可以更改</p>
+<p><img src="/img/add-disqus-in-hugo-5.png" alt="choose-preference"></p>
+<p>選完之後就按右下角的 <code>Complete Setup</code>
+設定就差不多完成哩～ 接下來可以到 <code>Setting</code> 頁面，原本的位置應該是在 <code>Start</code></p>
+<p><img src="/img/add-disqus-in-hugo-6.png" alt="remember-short-name"></p>
+<p>點擊上面選單的 <code>Setting</code> 進到設定頁面，左邊選擇 <code>General</code> ，等等會需要用到 <code>Shortname</code></p>
+<h3 id="hugo-安裝-disqus">Hugo 安裝 Disqus <a href="#hugo-%e5%ae%89%e8%a3%9d-disqus" class="anchor">🔗</a></h3><h4 id="在設定檔案中-configtoml-加入-disqusshortname">在設定檔案中 <code>config.toml</code> 加入 <code>disqusShortname</code> <a href="#%e5%9c%a8%e8%a8%ad%e5%ae%9a%e6%aa%94%e6%a1%88%e4%b8%ad-configtoml-%e5%8a%a0%e5%85%a5-disqusshortname" class="anchor">🔗</a></h4><pre tabindex="0"><code>disqusShortname: &lt;你的 Shortname&gt;
+</code></pre><p>位置不要放錯～ 我覺得可以盡量往上面放，放在 <code>title</code> 附近</p>
+<h4 id="在-layoutspartials-新增-disqushtml">在 <code>layouts/partials</code> 新增 <code>disqus.html</code> <a href="#%e5%9c%a8-layoutspartials-%e6%96%b0%e5%a2%9e-disqushtml" class="anchor">🔗</a></h4><p>記得不要加到 theme 資料夾裡面的 partials 了（我不小心放在這邊，結果想說為什麼正式環境都沒有）
+<code>disqus.html</code> 放上這段</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;disqus_thread&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Don&#39;t ever inject Disqus on localhost--it creates unwanted
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// discussions from &#39;localhost:1313&#39; on your Disqus account...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">==</span> <span class="s2">&#34;localhost&#34;</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">dsq</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span> <span class="nx">dsq</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span> <span class="nx">dsq</span><span class="p">.</span><span class="kr">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">disqus_shortname</span> <span class="o">=</span> <span class="s1">&#39;{{ .Site.Config.Services.Disqus.Shortname }}&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dsq</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">disqus_shortname</span> <span class="o">+</span> <span class="s1">&#39;.disqus.com/embed.js&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">||</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]).</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">dsq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">})();</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">noscript</span><span class="p">&gt;</span>Please enable JavaScript to view the <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;https://disqus.com/?ref_noscript&#34;</span><span class="p">&gt;</span>comments powered by Disqus.<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">noscript</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;https://disqus.com/&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;dsq-brlink&#34;</span><span class="p">&gt;</span>comments powered by <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;logo-disqus&#34;</span><span class="p">&gt;</span>Disqus<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p>如果想在本地開發環境看到留言板的話，可以把下面這段註解</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">==</span> <span class="s2">&#34;localhost&#34;</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span></code></pre></div><h4 id="將-disqushtml-引入到適合的位置">將 <code>disqus.html</code> 引入到適合的位置 <a href="#%e5%b0%87-disqushtml-%e5%bc%95%e5%85%a5%e5%88%b0%e9%81%a9%e5%90%88%e7%9a%84%e4%bd%8d%e7%bd%ae" class="anchor">🔗</a></h4><p>觀察一下如果要放東西在你的文章最下面，哪個檔案、哪個地方最適合
+就把下面這段放進去那邊</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;disqus markdown&#34;</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;width: 100%;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">	{{ partial &#34;disqus.html&#34; . }}
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p>我加上 <code>style=&quot;width: 100%;&quot;</code> 是因為 iframe 不知道為什麼會有 <code>width: 1px !important</code> 導致畫面上留言板只有 1px，加上這個 style 之後就可以了
+也可以嘗試看看把 <code>width: 100%</code> 拿掉看會不會有影響，也許不一定要加</p>
+<p>以上～ 把這段過程保留下來，之後自己需要再用的時候可以再來複習一次
+希望可以幫助到想要加留言板的你們～～！如果有卡關可以在下面留言，測試看看這個留言板是不是有正常運作</p>
+<h3 id="參考資料">參考資料 <a href="#%e5%8f%83%e8%80%83%e8%b3%87%e6%96%99" class="anchor">🔗</a></h3><a href="https://dizang.io/posts/hugo-install-disqus/" target="_blank">Hugo 安裝 Disqus 留言板</a>
+
+<p>(2/365)</p>
+
+    </div>
+
+    
+
+    <div class="disqus markdown" style="width: 100%;">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'https-www-zzuhann-work';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+</section>
+
+</div>
+      <div class="side">
+         <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/ts-unknown-vs-any/">Ts Unknown vs Any</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-slug-for-dynamic-routes/">使用 Next.js 的 Dynamic Routes 來處理多層結構的頁面</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-flex-to-limit-font-size/">使用 flex box 來防止字體被動態調整？</a>
+            </li>
+        
+            <li>
+                <a href="/posts/strict-false-ignore-null-ts/">tsconfig 設定 strict: false 會忽略 null 的型別判定</a>
+            </li>
+        
+            <li>
+                <a href="/posts/brain-can-not-multiwork/">讀書日記 | 大腦沒辦法多工，即使訓練也一樣！</a>
+            </li>
+        
+    </ul>
+</div>
+ 
+        <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/typescript">typescript(4)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端(2)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術(6)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%9D%82%E6%8A%80%E6%B5%85%E5%B0%9D">杂技浅尝(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98">觀看筆記(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98">讀書日記(2)</a>
+            </li>
+        
+    </ul>
+</div>
+ <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/css">css (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/css-challenge">css challenge (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/effective-typescript">effective typescript (4)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/hugo">hugo (3)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/next.js">next.js (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/reading-diary">reading diary (2)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/typescript">typescript (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/video-diary">video diary (1)</a>
+            </li>
+        
+    </ul>
+</div>
+
+      </div>
+    </main>
+  </body>
+</html>

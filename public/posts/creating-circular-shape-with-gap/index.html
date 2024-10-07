@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta content="CSS Challenge, CSS, CSS Circle" name="keywords">
+    <meta
+      content="CSS Challenge Day 6 | 做一個有缺口的圓形 - Han"
+      property="og:title"
+    />
+    <meta
+      content="紀錄 han 的前端/生活/各種筆記與日常～！ - 有缺口的圓形要怎麼做呢？最近開始做 css 的 100 天 Challenge，Day 6 有一個這樣的圖形需求，我先是朝了 clip path、svg 等方向來思考、找相關資料，但似乎沒有符合我需求的，於是直接找了網路上做 Day6 的人的分享，原來用做圓形的方式來思考就可以～"
+      property="og:description"
+    />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>CSS Challenge Day 6 | 做一個有缺口的圓形 | Han</title>
+<link rel="canonical" href="http://localhost:1313/posts/creating-circular-shape-with-gap/">
+<meta name="description" content="有缺口的圓形要怎麼做呢？最近開始做 css 的 100 天 Challenge，Day 6 有一個這樣的圖形需求，我先是朝了 clip path、svg 等方向來思考、找相關資料，但似乎沒有符合我需求的，於是直接找了網路上做 Day6 的人的分享，原來用做圓形的方式來思考就可以～" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="CSS Challenge Day 6 | 做一個有缺口的圓形 | Han" />
+<meta property="og:url" content="http://localhost:1313/posts/creating-circular-shape-with-gap/" />
+<meta property="og:description" content="有缺口的圓形要怎麼做呢？最近開始做 css 的 100 天 Challenge，Day 6 有一個這樣的圖形需求，我先是朝了 clip path、svg 等方向來思考、找相關資料，但似乎沒有符合我需求的，於是直接找了網路上做 Day6 的人的分享，原來用做圓形的方式來思考就可以～" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+ 
+  </head>
+
+  <body>
+    <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="http://localhost:1313/">Han</a>
+
+        <nav class="menu">
+            
+                <div class="menu-item">
+                    
+                        <a href="/posts/">Posts</a>
+                    
+                </div>
+            
+                <div class="menu-item">
+                    
+                        <a href="/about/">About</a>
+                    
+                </div>
+            
+        </nav>
+    </div>
+</header>
+
+    <main class="main-wrapper">
+      <div class="main">
+
+<section class="single">
+    <h1 class="title">CSS Challenge Day 6 | 做一個有缺口的圓形</h1>
+
+    
+        <div class="tip">
+            <time datetime="2024-09-18 23:56:27 &#43;0800 CST">2024/09/18</time>
+            <span class="split">·</span>
+            <span> 246 words </span>
+            <span class="split">·</span>
+            <span>
+                1 minutes to read
+            </span>
+        </div>
+    
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術</a>
+            
+        </div>
+        
+
+        
+            <div>
+                Tags:
+                
+                    <a href="/tags/css-challenge">CSS Challenge</a>
+                
+            </div>
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <figure><img src="/img/creating-circular-shape-with-gap-1.png" width="350">
+</figure>
+<p>這樣類似圓形的圖形會怎麼做呢？</p>
+<p>最近開始做 css 的 100 天 Challenge，Day 6 有一個這樣的圖形需求，我先是朝了 clip path、svg 等方向來思考、找相關資料，但似乎沒有符合我需求的，於是直接找了網路上做 Day6 的人的分享（<a href="https://ithelp.ithome.com.tw/articles/10290513?sc=rss.qu" target="_blank">[Day 7] Profile: 來製作個簡單樸實的個人檔案吧!</a>
+）</p>
+<p>發現只要像平常做圓形一樣去做就可以： <code>width</code> 、 <code>height</code> 、 <code>border-radius</code> 以及 <code>border</code></p>
+<p>關鍵在於想要製造缺口的那一邊的 border 顏色設為 <code>transparent</code></p>
+<p>又是把圖形想得太複雜的一天！</p>
+<p>今天 CSS Challenge 的成果：
+<p class="codepen" data-height="500" data-default-tab="result" data-slug-hash="vYqqqqy" data-user="zzuhann" style="height: 500px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"></p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script> </p>
+<p>（推坑一下 BOYNEXTDOOR！）</p>
+<p>（哇光是研究 hugo 要怎麼嵌入 codepen 預覽又另外花了一些時間，明天來分享！）</p>
+
+    </div>
+
+    
+
+    <div class="disqus markdown" style="width: 100%;">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'https-www-zzuhann-work';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+</section>
+
+</div>
+      <div class="side">
+         <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/ts-unknown-vs-any/">Ts Unknown vs Any</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-slug-for-dynamic-routes/">使用 Next.js 的 Dynamic Routes 來處理多層結構的頁面</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-flex-to-limit-font-size/">使用 flex box 來防止字體被動態調整？</a>
+            </li>
+        
+            <li>
+                <a href="/posts/strict-false-ignore-null-ts/">tsconfig 設定 strict: false 會忽略 null 的型別判定</a>
+            </li>
+        
+            <li>
+                <a href="/posts/brain-can-not-multiwork/">讀書日記 | 大腦沒辦法多工，即使訓練也一樣！</a>
+            </li>
+        
+    </ul>
+</div>
+ 
+        <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/typescript">typescript(4)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端(2)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術(6)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%9D%82%E6%8A%80%E6%B5%85%E5%B0%9D">杂技浅尝(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98">觀看筆記(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98">讀書日記(2)</a>
+            </li>
+        
+    </ul>
+</div>
+ <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/css">css (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/css-challenge">css challenge (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/effective-typescript">effective typescript (4)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/hugo">hugo (3)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/next.js">next.js (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/reading-diary">reading diary (2)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/typescript">typescript (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/video-diary">video diary (1)</a>
+            </li>
+        
+    </ul>
+</div>
+
+      </div>
+    </main>
+  </body>
+</html>

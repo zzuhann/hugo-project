@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta content="TypeScript, type declaration, 型態宣告, TSDoc, structural typing" name="keywords">
+    <meta
+      content="Effective TypeScript 系列：撰寫 TypeScript 型態宣告時的注意事項 - Han"
+      property="og:title"
+    />
+    <meta
+      content="紀錄 han 的前端/生活/各種筆記與日常～！ - 這篇文章探討了在撰寫 TypeScript 型態宣告時需要注意的事項，包括優先使用 structural typing、將所有用到的型態都 export、使用 JSDoc 或 TSDoc 格式的註釋來說明函式、類別與型態，以及優先考慮使用條件型態而不是多載的型態宣告。透過這些技巧，可以提高程式碼的可讀性和易用性。"
+      property="og:description"
+    />
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+
+
+
+
+<title>Effective TypeScript 系列：撰寫 TypeScript 型態宣告時的注意事項 | Han</title>
+<link rel="canonical" href="http://localhost:1313/posts/type-declaration-tips/">
+<meta name="description" content="這篇文章探討了在撰寫 TypeScript 型態宣告時需要注意的事項，包括優先使用 structural typing、將所有用到的型態都 export、使用 JSDoc 或 TSDoc 格式的註釋來說明函式、類別與型態，以及優先考慮使用條件型態而不是多載的型態宣告。透過這些技巧，可以提高程式碼的可讀性和易用性。" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Effective TypeScript 系列：撰寫 TypeScript 型態宣告時的注意事項 | Han" />
+<meta property="og:url" content="http://localhost:1313/posts/type-declaration-tips/" />
+<meta property="og:description" content="這篇文章探討了在撰寫 TypeScript 型態宣告時需要注意的事項，包括優先使用 structural typing、將所有用到的型態都 export、使用 JSDoc 或 TSDoc 格式的註釋來說明函式、類別與型態，以及優先考慮使用條件型態而不是多載的型態宣告。透過這些技巧，可以提高程式碼的可讀性和易用性。" />
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/icofont/icofont.min.css" />
+<link rel="stylesheet" href="/css/syntax.css" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+ 
+  </head>
+
+  <body>
+    <header class="header-wrapper">
+    <div class="header">
+        <a class="site-title" href="http://localhost:1313/">Han</a>
+
+        <nav class="menu">
+            
+                <div class="menu-item">
+                    
+                        <a href="/posts/">Posts</a>
+                    
+                </div>
+            
+                <div class="menu-item">
+                    
+                        <a href="/about/">About</a>
+                    
+                </div>
+            
+        </nav>
+    </div>
+</header>
+
+    <main class="main-wrapper">
+      <div class="main">
+
+<section class="single">
+    <h1 class="title">Effective TypeScript 系列：撰寫 TypeScript 型態宣告時的注意事項</h1>
+
+    
+        <div class="tip">
+            <time datetime="2024-04-06 20:31:14 &#43;0800 CST">2024/04/06</time>
+            <span class="split">·</span>
+            <span> 1917 words </span>
+            <span class="split">·</span>
+            <span>
+                4 minutes to read
+            </span>
+        </div>
+    
+
+    <div class="taxonomies">
+        
+        <div>
+            Categories:
+            
+                <a href="/categories/typescript">TypeScript</a>
+            
+        </div>
+        
+
+        
+            <div>
+                Tags:
+                
+                    <a href="/tags/effective-typescript">Effective TypeScript</a>
+                
+            </div>
+        
+    </div>
+
+    <hr />
+
+    <div class="content">
+        <h3 id="前情提要">前情提要 <a href="#%e5%89%8d%e6%83%85%e6%8f%90%e8%a6%81" class="anchor">🔗</a></h3><p>延續上一篇<a href="https://www.zzuhann.work/posts/typescript-types/" target="_blank">Effective TypeScript CH6 - 使用 TypeScript 後要注意的版本管理、介紹 @types</a>
+，這篇會提到的內容當自己嘗試要開始寫型態宣告、並且開放給其他人使用時，要注意哪些事情。</p>
+<h3 id="這篇文會提到">這篇文會提到 <a href="#%e9%80%99%e7%af%87%e6%96%87%e6%9c%83%e6%8f%90%e5%88%b0" class="anchor">🔗</a></h3><ul>
+<li><a href="#%E5%9C%A8%E5%AF%AB%E5%9E%8B%E6%85%8B%E5%AE%A3%E5%91%8A%E4%B8%A6%E4%B8%94%E9%A0%90%E8%A8%88%E9%96%8B%E6%94%BE%E7%B5%A6%E5%85%B6%E4%BB%96%E4%BA%BA%E4%BD%BF%E7%94%A8%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BB%80%E9%BA%BC">在寫型態宣告，並且預計開放給其他人使用，要注意什麼？</a>
+<ul>
+<li><a href="#%E5%84%AA%E5%85%88%E4%BD%BF%E7%94%A8-structural-typing-%E4%BE%86%E6%8F%90%E4%BE%9B%E9%9D%9E%E5%BF%85%E8%A6%81%E7%9A%84%E4%BE%9D%E8%B3%B4%E9%A0%85%E7%9B%AE">優先使用 structural typing 來提供非必要的依賴項目</a></li>
+<li><a href="#%E8%A8%AD%E8%A8%88%E4%BA%86-public-%E7%9A%84-api%E5%8F%AA%E8%A6%81%E6%9C%89%E7%94%A8%E5%88%B0%E7%9A%84%E5%9E%8B%E5%88%A5%E5%B0%B1%E6%8A%8A%E5%AE%83-export-%E5%87%BA%E5%8E%BB">設計了 public 的 api，只要有用到的型別就把它 export 出去</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-jsdoc-%E6%88%96-tsdoc-%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%A8%BB%E9%87%8B%E4%BE%86%E8%AA%AA%E6%98%8E%E5%8C%AF%E5%87%BA%E7%9A%84%E5%87%BD%E5%BC%8F%E9%A1%9E%E5%88%A5%E8%88%87%E5%9E%8B%E6%85%8B">使用 JSDoc 或 TSDoc 格式的註釋來說明匯出的函式、類別與型態</a></li>
+<li><a href="#%E5%84%AA%E5%85%88%E4%BD%BF%E7%94%A8%E6%A2%9D%E4%BB%B6%E5%9E%8B%E6%85%8B%E8%80%8C%E4%B8%8D%E6%98%AF%E5%A4%9A%E8%BC%89%E7%9A%84%E5%9E%8B%E6%85%8B%E5%AE%A3%E5%91%8A">優先使用條件型態，而不是多載的型態宣告</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="在寫型態宣告並且預計開放給其他人使用要注意什麼">在寫型態宣告，並且預計開放給其他人使用，要注意什麼？ <a href="#%e5%9c%a8%e5%af%ab%e5%9e%8b%e6%85%8b%e5%ae%a3%e5%91%8a%e4%b8%a6%e4%b8%94%e9%a0%90%e8%a8%88%e9%96%8b%e6%94%be%e7%b5%a6%e5%85%b6%e4%bb%96%e4%ba%ba%e4%bd%bf%e7%94%a8%e8%a6%81%e6%b3%a8%e6%84%8f%e4%bb%80%e9%ba%bc" class="anchor">🔗</a></h3><h4 id="優先使用-structural-typing-來提供非必要的依賴項目">優先使用 structural typing 來提供非必要的依賴項目 <a href="#%e5%84%aa%e5%85%88%e4%bd%bf%e7%94%a8-structural-typing-%e4%be%86%e6%8f%90%e4%be%9b%e9%9d%9e%e5%bf%85%e8%a6%81%e7%9a%84%e4%be%9d%e8%b3%b4%e9%a0%85%e7%9b%ae" class="anchor">🔗</a></h4><p>當開始寫型態宣告時，可能會有需要依賴其他 <code>@types</code> 的型別，為了讓其他使用者 install 時也能成功下載依賴的型別，所以將依賴的 <code>@types</code> 安裝在 devDependency。</p>
+<p>書上的舉例是：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 寫了一個解析 CSV 檔案的程式庫
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * input: CSV 檔案內容（為了方便 NodeJS 用戶/瀏覽器用戶，可以是 Buffer 或字串）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * output: 物件串列：將欄位名稱作為 key，欄位值作為 value
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">parseCSV</span><span class="p">(</span><span class="nx">input</span>: <span class="kt">string</span> <span class="o">|</span> <span class="nx">Buffer</span><span class="p">)</span><span class="o">:</span> <span class="p">{</span> <span class="p">[</span><span class="nx">column</span>: <span class="kt">string</span><span class="p">]</span><span class="o">:</span> <span class="kt">string</span> <span class="p">}[]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">input</span> <span class="o">===</span> <span class="s2">&#34;object&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">parseCSV</span><span class="p">(</span><span class="nx">input</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s2">&#34;utf-8&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>而 <code>Buffer</code> 是來自 nodejs 的型態宣告，所以 install 了 <code>@types/node</code></p>
+<pre tabindex="0"><code>npm install --save-dev @types/node
+</code></pre><p>這時候會產生的問題是：對瀏覽器開發者來說，它們並不需要這個型別、而對非 TypeScript 的 nodejs 開發者來說，他們也不需要。
+作者建議可以優先使用 structural typing，以減少對外部依賴的需要，只要符合所需功能的型別即可。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="c1">// 透過 structural typing，判斷是否存在特定的 method 來決定是否為 Buffer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">interface</span> <span class="nx">CSVBuffer</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">toString</span><span class="p">(</span><span class="nx">encoding</span>: <span class="kt">string</span><span class="p">)</span><span class="o">:</span> <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">parseCSV2</span><span class="p">(</span><span class="nx">input</span>: <span class="kt">string</span> <span class="o">|</span> <span class="nx">CSVBuffer</span><span class="p">)</span><span class="o">:</span> <span class="p">{</span> <span class="p">[</span><span class="nx">column</span>: <span class="kt">string</span><span class="p">]</span><span class="o">:</span> <span class="kt">string</span> <span class="p">}[]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">input</span> <span class="o">===</span> <span class="s2">&#34;object&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">parseCSV2</span><span class="p">(</span><span class="nx">input</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s2">&#34;utf-8&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 在 nodejs 中就可以透過以下方式使用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">parseCSV2</span><span class="p">(</span><span class="k">new</span> <span class="nx">Buffer</span><span class="p">(</span><span class="s2">&#34;a,b,c\n1,2,3\n&#34;</span><span class="p">));</span>
+</span></span></code></pre></div><p>能不依賴其他套件的型別就盡量不依賴，先嘗試看看透過 structural typing 是否能解決。
+作者下了這樣的總結：不要強迫 JavaScript 開發者依賴 <code>@types</code>、不要強迫 Web 開發者依賴 nodejs。</p>
+<h4 id="設計了-public-的-api只要有用到的型別就把它-export-出去">設計了 public 的 api，只要有用到的型別就把它 export 出去 <a href="#%e8%a8%ad%e8%a8%88%e4%ba%86-public-%e7%9a%84-api%e5%8f%aa%e8%a6%81%e6%9c%89%e7%94%a8%e5%88%b0%e7%9a%84%e5%9e%8b%e5%88%a5%e5%b0%b1%e6%8a%8a%e5%ae%83-export-%e5%87%ba%e5%8e%bb" class="anchor">🔗</a></h4><p>當設計了 public 的 api，應該把有用到的型別都 export，確保使用者可以存取到所有用到的型別，不需要東拼西湊，只為了找出類似的型別或是重新進行型態宣告。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="kr">interface</span> <span class="nx">Name</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">firstName</span>: <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">lastName</span>: <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="kd">function</span> <span class="nx">getDeposit</span><span class="p">(</span><span class="nx">name</span>: <span class="kt">Name</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>在上面的例子來說，雖然使用者 import 的對象是 <code>getDeposit</code> 這個 function，看起來不需要 import <code>Name</code> 這個型別，但其實為了正確執行 <code>getDeposit</code> 這個 function，他仍需要 <code>Name</code> 來驗證參數的型別。</p>
+<p>所以，只要有用到的型別就 export 出去，讓使用者更方便、也更彈性的使用你設計的 api。</p>
+<h4 id="使用-jsdoc-或-tsdoc-格式的註釋來說明匯出的函式類別與型態">使用 JSDoc 或 TSDoc 格式的註釋來說明匯出的函式、類別與型態 <a href="#%e4%bd%bf%e7%94%a8-jsdoc-%e6%88%96-tsdoc-%e6%a0%bc%e5%bc%8f%e7%9a%84%e8%a8%bb%e9%87%8b%e4%be%86%e8%aa%aa%e6%98%8e%e5%8c%af%e5%87%ba%e7%9a%84%e5%87%bd%e5%bc%8f%e9%a1%9e%e5%88%a5%e8%88%87%e5%9e%8b%e6%85%8b" class="anchor">🔗</a></h4><p>你經常寫的是行內註釋 <code>//</code> 還是 JSDoc/TSDoc 風格的註釋 <code>/** */</code> 呢？
+編輯器會透過提示工具把 JSDoc/TSDoc 的註釋顯示出來，行內註釋則不會。</p>
+<p><img src="/gif/jsdoc.gif" alt="jsdoc"></p>
+<p><img src="/gif/jsdoc-import.gif" alt="jsdoc-import">
+使用 JSDoc 時，import 也能看到 JSDoc 對該 function 的註釋。</p>
+<p>在定義型態時使用 TSDoc
+<img src="/gif/tsdoc-new.gif" alt="tsdoc"></p>
+<h4 id="優先使用條件型態而不是多載的型態宣告">優先使用條件型態，而不是多載的型態宣告 <a href="#%e5%84%aa%e5%85%88%e4%bd%bf%e7%94%a8%e6%a2%9d%e4%bb%b6%e5%9e%8b%e6%85%8b%e8%80%8c%e4%b8%8d%e6%98%af%e5%a4%9a%e8%bc%89%e7%9a%84%e5%9e%8b%e6%85%8b%e5%ae%a3%e5%91%8a" class="anchor">🔗</a></h4><p>雖然 TypeScript 支援多載的方式宣告 function 的型別，作者建議應該優先使用條件型態，而不是多載的型態宣告。
+條件型態可讓你的宣告式支援聯集型態。</p>
+<p>以下例子為 Effective TypeScript 書中程式碼</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-ts" data-lang="ts"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 需要實作一個可以接收 string | number 的 function
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 剛開始，可能會使用聯集類型
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">number</span> <span class="o">|</span> <span class="kt">string</span><span class="p">)</span><span class="o">:</span> <span class="kt">number</span> <span class="o">|</span> <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">any</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 這樣的寫法，會讓 return 的 type 都變成 string | number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">num</span> <span class="o">=</span> <span class="nx">double</span><span class="p">(</span><span class="mi">12</span><span class="p">);</span> <span class="c1">// 但我想要這個的 return type 是 number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">str</span> <span class="o">=</span> <span class="nx">double</span><span class="p">(</span><span class="s2">&#34;x&#34;</span><span class="p">);</span> <span class="c1">// 我想要這個的 return type 是 string
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 接下來，也許可以嘗試看看泛型
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double2</span><span class="p">&lt;</span><span class="nt">T</span> <span class="na">extends</span> <span class="na">number</span> <span class="err">|</span> <span class="na">string</span><span class="p">&gt;(</span><span class="nx">x</span>: <span class="kt">T</span><span class="p">)</span><span class="o">:</span> <span class="nx">T</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double2</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">any</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 傳入字面常值，因為是 const，所以傳給 T 的型別是 12 | &#39;x&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 接著 return 的型別就是 12 | &#39;x&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 但實際上，得到的結果應該是 24 | &#39;xx&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">num2</span> <span class="o">=</span> <span class="nx">double2</span><span class="p">(</span><span class="mi">12</span><span class="p">);</span> <span class="c1">// return type 12, 但實際應該是 24
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">str2</span> <span class="o">=</span> <span class="nx">double2</span><span class="p">(</span><span class="s2">&#34;x&#34;</span><span class="p">);</span> <span class="c1">// return type &#39;x&#39;, 但實際應該是 &#39;xx&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 試試看多載
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double3</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">number</span><span class="p">)</span><span class="o">:</span> <span class="kt">number</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double3</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">string</span><span class="p">)</span><span class="o">:</span> <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double3</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">any</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 看起來還不錯？
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">num3</span> <span class="o">=</span> <span class="nx">double3</span><span class="p">(</span><span class="mi">12</span><span class="p">);</span> <span class="c1">// number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">str3</span> <span class="o">=</span> <span class="nx">double3</span><span class="p">(</span><span class="s2">&#34;x&#34;</span><span class="p">);</span> <span class="c1">// string
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 此時如果有一個 function 嘗試傳入 string | number
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">number</span> <span class="o">|</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">double3</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 進行多載型態宣告時，TypeScript 會一個一個檢查，直到找到相符的為止
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 先檢查是否符合 function double3(x: number): number;
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 再檢查是否符合 function double3(x: string): string;
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 都不符合，所以會在最後一個 string type 報錯
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 使用條件型態
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 看起來像剛剛提到的泛型，但他有更縝密的 return type
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double4</span><span class="p">&lt;</span><span class="nt">T</span> <span class="na">extends</span> <span class="na">number</span> <span class="err">|</span> <span class="na">string</span><span class="p">&gt;(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">x</span>: <span class="kt">T</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="o">:</span> <span class="nx">T</span> <span class="kr">extends</span> <span class="kt">string</span> <span class="o">?</span> <span class="kt">string</span> <span class="o">:</span> <span class="kt">number</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">double4</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">any</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">number4</span> <span class="o">=</span> <span class="nx">double4</span><span class="p">(</span><span class="mi">12</span><span class="p">);</span> <span class="c1">// number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">string4</span> <span class="o">=</span> <span class="nx">double4</span><span class="p">(</span><span class="s2">&#34;x&#34;</span><span class="p">);</span> <span class="c1">// string
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">f2</span><span class="p">(</span><span class="nx">x</span>: <span class="kt">number</span> <span class="o">|</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">double4</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>上述的例子，多載對於一次傳入一種 type 可以很好的處理，但沒辦法處理會有多種 type 傳入的可能性
+而透過條件型態，可以判斷本次傳入的 type 為何者，靈活的調整 return type 的結果
+因此在上述的情境下，條件型態會是更好的選擇。</p>
+<h3 id="總結">總結 <a href="#%e7%b8%bd%e7%b5%90" class="anchor">🔗</a></h3><p>雖然希望可以在這篇就把上篇預計剩下還沒提到的東西寫完，但一驚！內容好像還是太多了～ 所以預計會再分為兩篇：如何測試型態宣告、以及原來也可以在 TypeScript 中宣告 this 的型別！</p>
+<p>做個總結，這篇主要提到的是如果自己想要寫型態宣告，並且開放給其他人使用，要注意哪些呢</p>
+<ol>
+<li>優先使用 structural typing 來提供非必要的依賴項目
+<ul>
+<li>盡量不去做其他套件的型態去做依賴，因為可能會讓瀏覽器開發者或是 JavaScript 開發者增加不需要的依賴</li>
+</ul>
+</li>
+<li>設計了 public 的 api，只要有用到的型別就把它 export 出去</li>
+<li>使用 JSDoc 或 TSDoc 格式的註釋來說明匯出的函式、類別與型態</li>
+<li>優先使用條件型態，而不是多載的型態宣告</li>
+</ol>
+<h3 id="ref-參考">REF 參考 <a href="#ref-%e5%8f%83%e8%80%83" class="anchor">🔗</a></h3><ul>
+<li><a href="https://www.books.com.tw/products/0010858053" target="_blank">Effective TypeScript 中文版</a>
+</li>
+</ul>
+
+    </div>
+
+    
+
+    <div class="disqus markdown" style="width: 100%;">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    
+    
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'https-www-zzuhann-work';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+</section>
+
+</div>
+      <div class="side">
+         <div class="side-recent">
+    <h2 class="side-title">
+        <a href="/posts/">Recent Posts</a>
+    </h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/posts/ts-unknown-vs-any/">Ts Unknown vs Any</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-slug-for-dynamic-routes/">使用 Next.js 的 Dynamic Routes 來處理多層結構的頁面</a>
+            </li>
+        
+            <li>
+                <a href="/posts/use-flex-to-limit-font-size/">使用 flex box 來防止字體被動態調整？</a>
+            </li>
+        
+            <li>
+                <a href="/posts/strict-false-ignore-null-ts/">tsconfig 設定 strict: false 會忽略 null 的型別判定</a>
+            </li>
+        
+            <li>
+                <a href="/posts/brain-can-not-multiwork/">讀書日記 | 大腦沒辦法多工，即使訓練也一樣！</a>
+            </li>
+        
+    </ul>
+</div>
+ 
+        <div class="side-categories">
+    <h2>Categories</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/categories/typescript">typescript(4)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E5%89%8D%E7%AB%AF">前端(2)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%8A%80%E8%A1%93">技術(6)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E6%9D%82%E6%8A%80%E6%B5%85%E5%B0%9D">杂技浅尝(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%A7%80%E7%9C%8B%E7%AD%86%E8%A8%98">觀看筆記(1)</a>
+            </li>
+        
+            <li>
+                <a href="/categories/%E8%AE%80%E6%9B%B8%E6%97%A5%E8%A8%98">讀書日記(2)</a>
+            </li>
+        
+    </ul>
+</div>
+ <div class="side-tags">
+    <h2>Tags</h2>
+    <hr />
+
+    <ul>
+        
+            <li>
+                <a href="/tags/css">css (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/css-challenge">css challenge (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/effective-typescript">effective typescript (4)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/hugo">hugo (3)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/next.js">next.js (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/reading-diary">reading diary (2)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/typescript">typescript (1)</a>
+            </li>
+        
+            <li>
+                <a href="/tags/video-diary">video diary (1)</a>
+            </li>
+        
+    </ul>
+</div>
+
+      </div>
+    </main>
+  </body>
+</html>
